@@ -1,0 +1,33 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "android: start emulator",
+      "type": "shell",
+      "command": "emulator -avd Medium_Phone_API_36.1",
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "mobile: flutter run (emulator)",
+      "type": "shell",
+      "command": "flutter run -d emulator-5554",
+      "options": { "cwd": "${workspaceFolder}/edifika_mobile" },
+      "problemMatcher": []
+    },
+    {
+      "label": "mobile: flutter analyze",
+      "type": "shell",
+      "command": "flutter analyze",
+      "options": { "cwd": "${workspaceFolder}/edifika_mobile" },
+      "problemMatcher": []
+    },
+    {
+      "label": "mobile: flutter test",
+      "type": "shell",
+      "command": "flutter test",
+      "options": { "cwd": "${workspaceFolder}/edifika_mobile" },
+      "problemMatcher": []
+    }
+  ]
+}

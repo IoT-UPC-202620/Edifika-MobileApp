@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Mobile: Flutter (emulador Android)",
+      "type": "dart",
+      "request": "launch",
+      "program": "lib/main.dart",
+      "cwd": "${workspaceFolder}/edifika_mobile",
+      "deviceId": "emulator-5554"
+    }
+  ]
+}
