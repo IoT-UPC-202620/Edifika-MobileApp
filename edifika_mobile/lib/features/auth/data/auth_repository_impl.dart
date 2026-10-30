@@ -16,7 +16,7 @@ class AuthRepositoryImpl implements AuthRepository {
   final SessionStorage _session;
 
   @override
-  Future<AuthenticatedUser> signIn({required String email, required String password}) async {
+  Future<AuthenticatedUser> signIn({required String email, required String password, bool remember = true}) async {
     final user = await guardApiCall(() async {
       final response = await _dio.post<Map<String, dynamic>>(
         ApiEndpoints.signIn,
@@ -24,7 +24,7 @@ class AuthRepositoryImpl implements AuthRepository {
       );
       return AuthenticatedUser.fromJson(response.data!);
     });
-    await _session.save(token: user.token, userJson: jsonEncode(user.toJson()));
+    await _session.save(token: user.token, userJson: jsonEncode(user.toJson()), persist: remember);
     return user;
   }
 

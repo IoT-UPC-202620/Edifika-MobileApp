@@ -24,4 +24,10 @@ class ProfileRepositoryImpl implements ProfileRepository {
         );
         return UserProfile.fromJson(response.data!);
       });
+
+  @override
+  Future<List<UserProfile>> getUsers() => guardApiCall(() async {
+        final response = await _dio.get<Object>(ApiEndpoints.users);
+        return parseList(response.data, UserProfile.fromJson);
+      });
 }
