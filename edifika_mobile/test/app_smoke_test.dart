@@ -1,14 +1,20 @@
 import 'package:edifika_mobile/app/app.dart';
 import 'package:edifika_mobile/app/app_dependencies.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 import 'helpers/memory_session_storage.dart';
 
 void main() {
-  testWidgets('la app arranca y muestra la URL de la API configurada', (tester) async {
-    await tester.pumpWidget(EdifikaApp(dependencies: AppDependencies.create(session: MemorySessionStorage())));
+  setUpAll(() => initializeDateFormatting('es'));
 
-    expect(find.text('Edifika'), findsOneWidget);
-    expect(find.textContaining('API: http://10.0.2.2:3000/api/v1'), findsOneWidget);
+  testWidgets('sin sesión guardada la app abre el login', (tester) async {
+    await tester.pumpWidget(EdifikaApp(dependencies: AppDependencies.create(session: MemorySessionStorage())));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Te damos la bienvenida'), findsOneWidget);
+    await tester.scrollUntilVisible(find.text('Iniciar sesión'), 200, scrollable: find.byType(Scrollable).first);
+    expect(find.text('Iniciar sesión'), findsOneWidget);
   });
 }

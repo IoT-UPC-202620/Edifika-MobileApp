@@ -1,14 +1,16 @@
 import 'package:dio/dio.dart';
 
 import '../../../core/config/api_endpoints.dart';
+import '../../../core/events/data_changes.dart';
 import '../../../core/network/api_client.dart';
 import '../domain/announcement.dart';
 import '../domain/announcements_repository.dart';
 
 class AnnouncementsRepositoryImpl implements AnnouncementsRepository {
-  AnnouncementsRepositoryImpl(this._dio);
+  AnnouncementsRepositoryImpl(this._dio, [this._changes]);
 
   final Dio _dio;
+  final DataChanges? _changes;
 
   /// Igual que `AnnouncementsService.getByBuildingId` del web.
   @override
@@ -36,6 +38,7 @@ class AnnouncementsRepositoryImpl implements AnnouncementsRepository {
           ApiEndpoints.announcementReads,
           data: {'id_announcement': announcementId, 'id_user': userId},
         );
+        _changes?.notify();
         return AnnouncementRead.fromJson(response.data!);
       });
 }

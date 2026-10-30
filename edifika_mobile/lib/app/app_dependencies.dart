@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 
+import '../core/events/data_changes.dart';
 import '../core/network/api_client.dart';
 import '../core/storage/session_storage.dart';
 import '../features/announcements/data/announcements_repository_impl.dart';
@@ -27,6 +28,7 @@ class AppDependencies {
   AppDependencies._({
     required this.session,
     required this.sessionExpired,
+    required this.dataChanges,
     required this.auth,
     required this.residential,
     required this.payments,
@@ -37,21 +39,25 @@ class AppDependencies {
     required this.profile,
   });
 
-  factory AppDependencies.create({SessionStorage? session}) {
+  /// `httpAdapter` solo se usa en pruebas (respuestas HTTP simuladas).
+  factory AppDependencies.create({SessionStorage? session, HttpClientAdapter? httpAdapter}) {
     final storage = session ?? SecureSessionStorage();
     final expired = StreamController<void>.broadcast();
     final Dio dio = createApiClient(session: storage, onUnauthorized: () => expired.add(null));
+    if (httpAdapter != null) dio.httpClientAdapter = httpAdapter;
+    final changes = DataChanges();
 
     return AppDependencies._(
       session: storage,
       sessionExpired: expired,
+      dataChanges: changes,
       auth: AuthRepositoryImpl(dio, storage),
       residential: ResidentialRepositoryImpl(dio),
       payments: PaymentsRepositoryImpl(dio),
-      reservations: ReservationsRepositoryImpl(dio),
-      forum: ForumRepositoryImpl(dio),
-      notifications: NotificationsRepositoryImpl(dio),
-      announcements: AnnouncementsRepositoryImpl(dio),
+      reservations: ReservationsRepositoryImpl(dio, changes),
+      forum: ForumRepositoryImpl(dio, changes),
+      notifications: NotificationsRepositoryImpl(dio, changes),
+      announcements: AnnouncementsRepositoryImpl(dio, changes),
       profile: ProfileRepositoryImpl(dio),
     );
   }
@@ -60,6 +66,9 @@ class AppDependencies {
 
   /// Emite cuando el servidor responde 401 con un token: la sesión se cerró.
   final StreamController<void> sessionExpired;
+
+  /// Emite tras cada escritura (reserva, cancelación, lectura, publicación).
+  final DataChanges dataChanges;
 
   final AuthRepository auth;
   final ResidentialRepository residential;

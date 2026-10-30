@@ -1,14 +1,16 @@
 import 'package:dio/dio.dart';
 
 import '../../../core/config/api_endpoints.dart';
+import '../../../core/events/data_changes.dart';
 import '../../../core/network/api_client.dart';
 import '../domain/reservation_models.dart';
 import '../domain/reservations_repository.dart';
 
 class ReservationsRepositoryImpl implements ReservationsRepository {
-  ReservationsRepositoryImpl(this._dio);
+  ReservationsRepositoryImpl(this._dio, [this._changes]);
 
   final Dio _dio;
+  final DataChanges? _changes;
 
   @override
   Future<List<CommonArea>> getCommonAreas() => guardApiCall(() async {
@@ -41,6 +43,7 @@ class ReservationsRepositoryImpl implements ReservationsRepository {
             'numberOfGuests': numberOfGuests,
           },
         );
+        _changes?.notify();
         return Reservation.fromJson(response.data!);
       });
 
@@ -50,6 +53,7 @@ class ReservationsRepositoryImpl implements ReservationsRepository {
           '${ApiEndpoints.reservations}/$reservationId/cancelations',
           data: const <String, dynamic>{},
         );
+        _changes?.notify();
         return Reservation.fromJson(response.data!);
       });
 }

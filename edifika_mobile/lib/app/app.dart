@@ -1,67 +1,72 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 
-import '../core/config/app_config.dart';
+import '../core/theme/app_theme.dart';
+import '../features/auth/presentation/session_cubit.dart';
 import 'app_dependencies.dart';
+import 'app_router.dart';
 
-class EdifikaApp extends StatelessWidget {
-  EdifikaApp({super.key, required this.dependencies});
+class EdifikaApp extends StatefulWidget {
+  const EdifikaApp({super.key, required this.dependencies});
 
   final AppDependencies dependencies;
 
-  final GoRouter _router = GoRouter(
-    routes: [
-      GoRoute(path: '/', builder: (context, state) => const _PendingDesignScreen()),
-    ],
-  );
-
   @override
-  Widget build(BuildContext context) {
-    return MultiRepositoryProvider(
-      providers: [
-        RepositoryProvider.value(value: dependencies.auth),
-        RepositoryProvider.value(value: dependencies.residential),
-        RepositoryProvider.value(value: dependencies.payments),
-        RepositoryProvider.value(value: dependencies.reservations),
-        RepositoryProvider.value(value: dependencies.forum),
-        RepositoryProvider.value(value: dependencies.notifications),
-        RepositoryProvider.value(value: dependencies.announcements),
-        RepositoryProvider.value(value: dependencies.profile),
-      ],
-      child: MaterialApp.router(
-        title: 'Edifika',
-        debugShowCheckedModeBanner: false,
-        // TODO(design): reemplazar por core/theme generado desde los tokens de Figma.
-        theme: ThemeData(useMaterial3: true),
-        routerConfig: _router,
-      ),
-    );
-  }
+  State<EdifikaApp> createState() => _EdifikaAppState();
 }
 
-/// Pantalla temporal hasta tener el inventario de diseño de Figma.
-class _PendingDesignScreen extends StatelessWidget {
-  const _PendingDesignScreen();
+class _EdifikaAppState extends State<EdifikaApp> {
+  late final SessionCubit _session;
+  late final GoRouter _router;
+
+  @override
+  void initState() {
+    super.initState();
+    final deps = widget.dependencies;
+    _session = SessionCubit(
+      auth: deps.auth,
+      residential: deps.residential,
+      sessionExpired: deps.sessionExpired.stream,
+    )..restore();
+    _router = createRouter(_session);
+  }
+
+  @override
+  void dispose() {
+    _router.dispose();
+    _session.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Edifika', style: textTheme.headlineMedium),
-              const SizedBox(height: 8),
-              Text('Pantallas pendientes del diseño en Figma.', style: textTheme.bodyLarge),
-              const SizedBox(height: 16),
-              Text('API: ${AppConfig.apiBaseUrl}', style: textTheme.bodySmall),
-            ],
-          ),
+    final deps = widget.dependencies;
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider.value(value: deps.auth),
+        RepositoryProvider.value(value: deps.residential),
+        RepositoryProvider.value(value: deps.payments),
+        RepositoryProvider.value(value: deps.reservations),
+        RepositoryProvider.value(value: deps.forum),
+        RepositoryProvider.value(value: deps.notifications),
+        RepositoryProvider.value(value: deps.announcements),
+        RepositoryProvider.value(value: deps.profile),
+      ],
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider.value(value: _session),
+          RepositoryProvider.value(value: deps.dataChanges),
+        ],
+        child: MaterialApp.router(
+          title: 'Edifika',
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.light(),
+          locale: const Locale('es', 'PE'),
+          supportedLocales: const [Locale('es', 'PE'), Locale('es')],
+          localizationsDelegates: GlobalMaterialLocalizations.delegates,
+          routerConfig: _router,
         ),
       ),
     );
