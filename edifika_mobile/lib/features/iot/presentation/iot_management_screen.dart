@@ -122,6 +122,7 @@ class _BuildingContent extends StatelessWidget {
       if (state.discovered.isNotEmpty) ...[
         const SizedBox(height: AppSpacing.md),
         _DiscoveredBanner(state: state),
+        const SizedBox(height: AppSpacing.md),
       ],
       _SummaryGrid(summary: state.summary),
       const SizedBox(height: AppSpacing.md),
