@@ -32,12 +32,12 @@ class LoginCubit extends Cubit<LoginState> {
     emit(state.copyWith(submitting: true, error: null));
     try {
       final user = await _auth.signIn(email: email.trim(), password: password, remember: state.remember);
-      if (!user.isResident) {
-        // La app es para residentes; la administración usa la aplicación web.
+      if (!user.canUseMobileApp) {
+        // Residentes usan sus pantallas; administradores, la gestión IoT.
         await _auth.signOut();
         emit(state.copyWith(
           submitting: false,
-          error: 'Esta app es para propietarios e inquilinos. La administración ingresa desde la aplicación web.',
+          error: 'Tu cuenta no tiene un rol habilitado para la app (propietario, inquilino o administrador).',
         ));
         return;
       }

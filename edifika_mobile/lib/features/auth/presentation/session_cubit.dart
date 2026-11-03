@@ -47,7 +47,7 @@ class SessionCubit extends Cubit<SessionState> {
 
   Future<void> restore() async {
     final user = await _auth.restoreSession();
-    if (user == null || !user.isResident) {
+    if (user == null || !user.canUseMobileApp) {
       emit(const SessionState(status: SessionStatus.unauthenticated));
       return;
     }
@@ -56,6 +56,8 @@ class SessionCubit extends Cubit<SessionState> {
 
   Future<void> signedIn(AuthenticatedUser user) async {
     emit(SessionState(status: SessionStatus.authenticated, user: user));
+    // El administrador no vive en una unidad: elige el edificio en la gestión IoT.
+    if (user.isAdmin) return;
     await loadResidence();
   }
 

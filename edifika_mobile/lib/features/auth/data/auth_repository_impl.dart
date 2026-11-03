@@ -7,6 +7,7 @@ import '../../../core/network/api_client.dart';
 import '../../../core/storage/session_storage.dart';
 import '../domain/auth_repository.dart';
 import '../domain/authenticated_user.dart';
+import 'jwt_claims.dart';
 import 'jwt_expiry.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
@@ -22,7 +23,9 @@ class AuthRepositoryImpl implements AuthRepository {
         ApiEndpoints.signIn,
         data: {'email': email, 'password': password},
       );
-      return AuthenticatedUser.fromJson(response.data!);
+      final parsed = AuthenticatedUser.fromJson(response.data!);
+      // El IAM real no envía `roles` en el cuerpo: se toman del JWT.
+      return parsed.roles.isNotEmpty ? parsed : parsed.copyWith(roles: jwtRoles(parsed.token));
     });
     await _session.save(token: user.token, userJson: jsonEncode(user.toJson()), persist: remember);
     return user;
