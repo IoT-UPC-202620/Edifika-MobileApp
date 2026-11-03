@@ -101,6 +101,35 @@ abstract class DeviceCommand with _$DeviceCommand {
   bool get isPending => status.toUpperCase() == 'PENDING';
 }
 
+/// Nodo que un gateway identificó sin estar registrado (`DiscoveredDeviceResource`).
+/// Está inerte hasta que el administrador lo adopta; `pairingCode` es el código que
+/// muestra su pantalla.
+@freezed
+abstract class DiscoveredDevice with _$DiscoveredDevice {
+  const factory DiscoveredDevice({
+    required int id,
+    required String deviceCode,
+    required int gatewayId,
+    @Default('') String gatewayCode,
+    required int buildingId,
+    @Default('') String mac,
+    @Default('') String firmware,
+    String? model,
+    @Default(<String>[]) List<String> capabilities,
+    String? ip,
+    int? rssi,
+    @Default('') String pairingCode,
+
+    /// `PENDING`, `ADOPTED` o `IGNORED`.
+    @Default('PENDING') String status,
+    int? deviceId,
+    String? firstSeenAt,
+    String? lastSeenAt,
+  }) = _DiscoveredDevice;
+
+  factory DiscoveredDevice.fromJson(Map<String, dynamic> json) => _$DiscoveredDeviceFromJson(json);
+}
+
 /// Credencial que ya usa la tarjeta capturada (`CardEnrollmentResource.existingCredential`).
 @freezed
 abstract class ExistingCardCredential with _$ExistingCardCredential {

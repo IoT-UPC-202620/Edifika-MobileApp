@@ -35,6 +35,7 @@ class ApiEndpoints {
   static const String iotGateways = '/iot/gateways';
   static const String iotDevices = '/iot/devices';
   static const String iotDeviceCommands = '/iot/device-commands';
+  static const String iotDiscoveredDevices = '/iot/discovered-devices';
   static const String accessCredentials = '/access/credentials';
   static const String telemetryDevices = '/telemetry/devices';
 }

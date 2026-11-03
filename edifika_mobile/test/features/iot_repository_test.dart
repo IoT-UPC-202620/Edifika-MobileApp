@@ -242,4 +242,48 @@ void main() {
     expect(adapter.requests.last.data, {'status': 'SUSPENDED'});
     expect(updated.status, 'SUSPENDED');
   });
+
+  test('dispositivos descubiertos: listar, identificar, adoptar e ignorar', () async {
+    const discovered = {
+      'id': 4,
+      'deviceCode': 'esp32-3c71bf',
+      'gatewayId': 1,
+      'gatewayCode': 'edge-gateway-01',
+      'buildingId': 12,
+      'mac': '24:6F:28:3C:71:BF',
+      'firmware': 'v0.6.0',
+      'model': 'door-node',
+      'capabilities': ['RFID', 'LOCK'],
+      'ip': '192.168.1.40',
+      'rssi': -58,
+      'pairingCode': '4821',
+      'status': 'PENDING',
+      'deviceId': null,
+      'firstSeenAt': '2026-11-03T15:04:05Z',
+      'lastSeenAt': '2026-11-03T15:09:05Z',
+    };
+    adapter.routes['GET /api/v1/iot/discovered-devices'] = const FakeRoute(200, [discovered]);
+    adapter.routes['POST /api/v1/iot/discovered-devices/4/identify'] = const FakeRoute(202, null);
+    adapter.routes['POST /api/v1/iot/discovered-devices/4/adopt'] = FakeRoute(201, {...deviceJson, 'id': 9, 'deviceCode': 'esp32-3c71bf'});
+    adapter.routes['POST /api/v1/iot/discovered-devices/4/ignore'] = FakeRoute(200, {...discovered, 'status': 'IGNORED'});
+
+    final list = await repository.getDiscoveredDevices(12);
+    await repository.identifyDiscoveredDevice(4);
+    final device = await repository.adoptDiscoveredDevice(4,
+        name: 'Puerta gimnasio', location: 'Piso 2', capabilities: ['RFID', 'LOCK'], unlockSeconds: 5);
+    await repository.ignoreDiscoveredDevice(4);
+
+    expect(adapter.requests[0].queryParameters, {'buildingId': 12});
+    expect(list.single.pairingCode, '4821');
+    expect(list.single.capabilities, ['RFID', 'LOCK']);
+    expect(adapter.requests[1].data, {'seconds': 10});
+    expect(adapter.requests[2].data, {
+      'name': 'Puerta gimnasio',
+      'location': 'Piso 2',
+      'deviceType': 'DOOR',
+      'capabilities': ['RFID', 'LOCK'],
+      'unlockSeconds': 5,
+    });
+    expect(device.id, 9);
+  });
 }

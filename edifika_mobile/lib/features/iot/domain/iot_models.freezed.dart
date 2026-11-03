@@ -1212,6 +1212,322 @@ as String?,
 
 
 /// @nodoc
+mixin _$DiscoveredDevice {
+
+ int get id; String get deviceCode; int get gatewayId; String get gatewayCode; int get buildingId; String get mac; String get firmware; String? get model; List<String> get capabilities; String? get ip; int? get rssi; String get pairingCode;/// `PENDING`, `ADOPTED` o `IGNORED`.
+ String get status; int? get deviceId; String? get firstSeenAt; String? get lastSeenAt;
+/// Create a copy of DiscoveredDevice
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$DiscoveredDeviceCopyWith<DiscoveredDevice> get copyWith => _$DiscoveredDeviceCopyWithImpl<DiscoveredDevice>(this as DiscoveredDevice, _$identity);
+
+  /// Serializes this DiscoveredDevice to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DiscoveredDevice&&(identical(other.id, id) || other.id == id)&&(identical(other.deviceCode, deviceCode) || other.deviceCode == deviceCode)&&(identical(other.gatewayId, gatewayId) || other.gatewayId == gatewayId)&&(identical(other.gatewayCode, gatewayCode) || other.gatewayCode == gatewayCode)&&(identical(other.buildingId, buildingId) || other.buildingId == buildingId)&&(identical(other.mac, mac) || other.mac == mac)&&(identical(other.firmware, firmware) || other.firmware == firmware)&&(identical(other.model, model) || other.model == model)&&const DeepCollectionEquality().equals(other.capabilities, capabilities)&&(identical(other.ip, ip) || other.ip == ip)&&(identical(other.rssi, rssi) || other.rssi == rssi)&&(identical(other.pairingCode, pairingCode) || other.pairingCode == pairingCode)&&(identical(other.status, status) || other.status == status)&&(identical(other.deviceId, deviceId) || other.deviceId == deviceId)&&(identical(other.firstSeenAt, firstSeenAt) || other.firstSeenAt == firstSeenAt)&&(identical(other.lastSeenAt, lastSeenAt) || other.lastSeenAt == lastSeenAt));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,deviceCode,gatewayId,gatewayCode,buildingId,mac,firmware,model,const DeepCollectionEquality().hash(capabilities),ip,rssi,pairingCode,status,deviceId,firstSeenAt,lastSeenAt);
+
+@override
+String toString() {
+  return 'DiscoveredDevice(id: $id, deviceCode: $deviceCode, gatewayId: $gatewayId, gatewayCode: $gatewayCode, buildingId: $buildingId, mac: $mac, firmware: $firmware, model: $model, capabilities: $capabilities, ip: $ip, rssi: $rssi, pairingCode: $pairingCode, status: $status, deviceId: $deviceId, firstSeenAt: $firstSeenAt, lastSeenAt: $lastSeenAt)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $DiscoveredDeviceCopyWith<$Res>  {
+  factory $DiscoveredDeviceCopyWith(DiscoveredDevice value, $Res Function(DiscoveredDevice) _then) = _$DiscoveredDeviceCopyWithImpl;
+@useResult
+$Res call({
+ int id, String deviceCode, int gatewayId, String gatewayCode, int buildingId, String mac, String firmware, String? model, List<String> capabilities, String? ip, int? rssi, String pairingCode, String status, int? deviceId, String? firstSeenAt, String? lastSeenAt
+});
+
+
+
+
+}
+/// @nodoc
+class _$DiscoveredDeviceCopyWithImpl<$Res>
+    implements $DiscoveredDeviceCopyWith<$Res> {
+  _$DiscoveredDeviceCopyWithImpl(this._self, this._then);
+
+  final DiscoveredDevice _self;
+  final $Res Function(DiscoveredDevice) _then;
+
+/// Create a copy of DiscoveredDevice
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? deviceCode = null,Object? gatewayId = null,Object? gatewayCode = null,Object? buildingId = null,Object? mac = null,Object? firmware = null,Object? model = freezed,Object? capabilities = null,Object? ip = freezed,Object? rssi = freezed,Object? pairingCode = null,Object? status = null,Object? deviceId = freezed,Object? firstSeenAt = freezed,Object? lastSeenAt = freezed,}) {
+  return _then(_self.copyWith(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,deviceCode: null == deviceCode ? _self.deviceCode : deviceCode // ignore: cast_nullable_to_non_nullable
+as String,gatewayId: null == gatewayId ? _self.gatewayId : gatewayId // ignore: cast_nullable_to_non_nullable
+as int,gatewayCode: null == gatewayCode ? _self.gatewayCode : gatewayCode // ignore: cast_nullable_to_non_nullable
+as String,buildingId: null == buildingId ? _self.buildingId : buildingId // ignore: cast_nullable_to_non_nullable
+as int,mac: null == mac ? _self.mac : mac // ignore: cast_nullable_to_non_nullable
+as String,firmware: null == firmware ? _self.firmware : firmware // ignore: cast_nullable_to_non_nullable
+as String,model: freezed == model ? _self.model : model // ignore: cast_nullable_to_non_nullable
+as String?,capabilities: null == capabilities ? _self.capabilities : capabilities // ignore: cast_nullable_to_non_nullable
+as List<String>,ip: freezed == ip ? _self.ip : ip // ignore: cast_nullable_to_non_nullable
+as String?,rssi: freezed == rssi ? _self.rssi : rssi // ignore: cast_nullable_to_non_nullable
+as int?,pairingCode: null == pairingCode ? _self.pairingCode : pairingCode // ignore: cast_nullable_to_non_nullable
+as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as String,deviceId: freezed == deviceId ? _self.deviceId : deviceId // ignore: cast_nullable_to_non_nullable
+as int?,firstSeenAt: freezed == firstSeenAt ? _self.firstSeenAt : firstSeenAt // ignore: cast_nullable_to_non_nullable
+as String?,lastSeenAt: freezed == lastSeenAt ? _self.lastSeenAt : lastSeenAt // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [DiscoveredDevice].
+extension DiscoveredDevicePatterns on DiscoveredDevice {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _DiscoveredDevice value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _DiscoveredDevice() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _DiscoveredDevice value)  $default,){
+final _that = this;
+switch (_that) {
+case _DiscoveredDevice():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _DiscoveredDevice value)?  $default,){
+final _that = this;
+switch (_that) {
+case _DiscoveredDevice() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String deviceCode,  int gatewayId,  String gatewayCode,  int buildingId,  String mac,  String firmware,  String? model,  List<String> capabilities,  String? ip,  int? rssi,  String pairingCode,  String status,  int? deviceId,  String? firstSeenAt,  String? lastSeenAt)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _DiscoveredDevice() when $default != null:
+return $default(_that.id,_that.deviceCode,_that.gatewayId,_that.gatewayCode,_that.buildingId,_that.mac,_that.firmware,_that.model,_that.capabilities,_that.ip,_that.rssi,_that.pairingCode,_that.status,_that.deviceId,_that.firstSeenAt,_that.lastSeenAt);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String deviceCode,  int gatewayId,  String gatewayCode,  int buildingId,  String mac,  String firmware,  String? model,  List<String> capabilities,  String? ip,  int? rssi,  String pairingCode,  String status,  int? deviceId,  String? firstSeenAt,  String? lastSeenAt)  $default,) {final _that = this;
+switch (_that) {
+case _DiscoveredDevice():
+return $default(_that.id,_that.deviceCode,_that.gatewayId,_that.gatewayCode,_that.buildingId,_that.mac,_that.firmware,_that.model,_that.capabilities,_that.ip,_that.rssi,_that.pairingCode,_that.status,_that.deviceId,_that.firstSeenAt,_that.lastSeenAt);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String deviceCode,  int gatewayId,  String gatewayCode,  int buildingId,  String mac,  String firmware,  String? model,  List<String> capabilities,  String? ip,  int? rssi,  String pairingCode,  String status,  int? deviceId,  String? firstSeenAt,  String? lastSeenAt)?  $default,) {final _that = this;
+switch (_that) {
+case _DiscoveredDevice() when $default != null:
+return $default(_that.id,_that.deviceCode,_that.gatewayId,_that.gatewayCode,_that.buildingId,_that.mac,_that.firmware,_that.model,_that.capabilities,_that.ip,_that.rssi,_that.pairingCode,_that.status,_that.deviceId,_that.firstSeenAt,_that.lastSeenAt);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _DiscoveredDevice implements DiscoveredDevice {
+  const _DiscoveredDevice({required this.id, required this.deviceCode, required this.gatewayId, this.gatewayCode = '', required this.buildingId, this.mac = '', this.firmware = '', this.model, final  List<String> capabilities = const <String>[], this.ip, this.rssi, this.pairingCode = '', this.status = 'PENDING', this.deviceId, this.firstSeenAt, this.lastSeenAt}): _capabilities = capabilities;
+  factory _DiscoveredDevice.fromJson(Map<String, dynamic> json) => _$DiscoveredDeviceFromJson(json);
+
+@override final  int id;
+@override final  String deviceCode;
+@override final  int gatewayId;
+@override@JsonKey() final  String gatewayCode;
+@override final  int buildingId;
+@override@JsonKey() final  String mac;
+@override@JsonKey() final  String firmware;
+@override final  String? model;
+ final  List<String> _capabilities;
+@override@JsonKey() List<String> get capabilities {
+  if (_capabilities is EqualUnmodifiableListView) return _capabilities;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_capabilities);
+}
+
+@override final  String? ip;
+@override final  int? rssi;
+@override@JsonKey() final  String pairingCode;
+/// `PENDING`, `ADOPTED` o `IGNORED`.
+@override@JsonKey() final  String status;
+@override final  int? deviceId;
+@override final  String? firstSeenAt;
+@override final  String? lastSeenAt;
+
+/// Create a copy of DiscoveredDevice
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$DiscoveredDeviceCopyWith<_DiscoveredDevice> get copyWith => __$DiscoveredDeviceCopyWithImpl<_DiscoveredDevice>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$DiscoveredDeviceToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DiscoveredDevice&&(identical(other.id, id) || other.id == id)&&(identical(other.deviceCode, deviceCode) || other.deviceCode == deviceCode)&&(identical(other.gatewayId, gatewayId) || other.gatewayId == gatewayId)&&(identical(other.gatewayCode, gatewayCode) || other.gatewayCode == gatewayCode)&&(identical(other.buildingId, buildingId) || other.buildingId == buildingId)&&(identical(other.mac, mac) || other.mac == mac)&&(identical(other.firmware, firmware) || other.firmware == firmware)&&(identical(other.model, model) || other.model == model)&&const DeepCollectionEquality().equals(other._capabilities, _capabilities)&&(identical(other.ip, ip) || other.ip == ip)&&(identical(other.rssi, rssi) || other.rssi == rssi)&&(identical(other.pairingCode, pairingCode) || other.pairingCode == pairingCode)&&(identical(other.status, status) || other.status == status)&&(identical(other.deviceId, deviceId) || other.deviceId == deviceId)&&(identical(other.firstSeenAt, firstSeenAt) || other.firstSeenAt == firstSeenAt)&&(identical(other.lastSeenAt, lastSeenAt) || other.lastSeenAt == lastSeenAt));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,deviceCode,gatewayId,gatewayCode,buildingId,mac,firmware,model,const DeepCollectionEquality().hash(_capabilities),ip,rssi,pairingCode,status,deviceId,firstSeenAt,lastSeenAt);
+
+@override
+String toString() {
+  return 'DiscoveredDevice(id: $id, deviceCode: $deviceCode, gatewayId: $gatewayId, gatewayCode: $gatewayCode, buildingId: $buildingId, mac: $mac, firmware: $firmware, model: $model, capabilities: $capabilities, ip: $ip, rssi: $rssi, pairingCode: $pairingCode, status: $status, deviceId: $deviceId, firstSeenAt: $firstSeenAt, lastSeenAt: $lastSeenAt)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$DiscoveredDeviceCopyWith<$Res> implements $DiscoveredDeviceCopyWith<$Res> {
+  factory _$DiscoveredDeviceCopyWith(_DiscoveredDevice value, $Res Function(_DiscoveredDevice) _then) = __$DiscoveredDeviceCopyWithImpl;
+@override @useResult
+$Res call({
+ int id, String deviceCode, int gatewayId, String gatewayCode, int buildingId, String mac, String firmware, String? model, List<String> capabilities, String? ip, int? rssi, String pairingCode, String status, int? deviceId, String? firstSeenAt, String? lastSeenAt
+});
+
+
+
+
+}
+/// @nodoc
+class __$DiscoveredDeviceCopyWithImpl<$Res>
+    implements _$DiscoveredDeviceCopyWith<$Res> {
+  __$DiscoveredDeviceCopyWithImpl(this._self, this._then);
+
+  final _DiscoveredDevice _self;
+  final $Res Function(_DiscoveredDevice) _then;
+
+/// Create a copy of DiscoveredDevice
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? deviceCode = null,Object? gatewayId = null,Object? gatewayCode = null,Object? buildingId = null,Object? mac = null,Object? firmware = null,Object? model = freezed,Object? capabilities = null,Object? ip = freezed,Object? rssi = freezed,Object? pairingCode = null,Object? status = null,Object? deviceId = freezed,Object? firstSeenAt = freezed,Object? lastSeenAt = freezed,}) {
+  return _then(_DiscoveredDevice(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,deviceCode: null == deviceCode ? _self.deviceCode : deviceCode // ignore: cast_nullable_to_non_nullable
+as String,gatewayId: null == gatewayId ? _self.gatewayId : gatewayId // ignore: cast_nullable_to_non_nullable
+as int,gatewayCode: null == gatewayCode ? _self.gatewayCode : gatewayCode // ignore: cast_nullable_to_non_nullable
+as String,buildingId: null == buildingId ? _self.buildingId : buildingId // ignore: cast_nullable_to_non_nullable
+as int,mac: null == mac ? _self.mac : mac // ignore: cast_nullable_to_non_nullable
+as String,firmware: null == firmware ? _self.firmware : firmware // ignore: cast_nullable_to_non_nullable
+as String,model: freezed == model ? _self.model : model // ignore: cast_nullable_to_non_nullable
+as String?,capabilities: null == capabilities ? _self._capabilities : capabilities // ignore: cast_nullable_to_non_nullable
+as List<String>,ip: freezed == ip ? _self.ip : ip // ignore: cast_nullable_to_non_nullable
+as String?,rssi: freezed == rssi ? _self.rssi : rssi // ignore: cast_nullable_to_non_nullable
+as int?,pairingCode: null == pairingCode ? _self.pairingCode : pairingCode // ignore: cast_nullable_to_non_nullable
+as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as String,deviceId: freezed == deviceId ? _self.deviceId : deviceId // ignore: cast_nullable_to_non_nullable
+as int?,firstSeenAt: freezed == firstSeenAt ? _self.firstSeenAt : firstSeenAt // ignore: cast_nullable_to_non_nullable
+as String?,lastSeenAt: freezed == lastSeenAt ? _self.lastSeenAt : lastSeenAt // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
 mixin _$ExistingCardCredential {
 
  int get id; int? get userId; String? get holderName; String? get status;
