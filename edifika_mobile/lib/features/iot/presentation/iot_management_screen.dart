@@ -113,12 +113,16 @@ class _BuildingContent extends StatelessWidget {
       return const [
         EmptyView(
           icon: Icons.router_outlined,
-          message: 'Este edificio aún no tiene gateways ni dispositivos IoT registrados. '
-              'Por ahora el emparejamiento se hace manualmente en el backend.',
+          message: 'Este edificio aún no tiene un gateway. Registra el gateway en el backend; '
+              'los dispositivos que se anuncien en su red aparecerán aquí para adoptarlos.',
         ),
       ];
     }
     return [
+      if (state.discovered.isNotEmpty) ...[
+        const SizedBox(height: AppSpacing.md),
+        _DiscoveredBanner(state: state),
+      ],
       _SummaryGrid(summary: state.summary),
       const SizedBox(height: AppSpacing.md),
       _CardsEntry(state: state),
@@ -155,6 +159,51 @@ class _BuildingContent extends StatelessWidget {
           const SizedBox(height: AppSpacing.md),
         ],
     ];
+  }
+}
+
+/// Aviso de nodos identificados por los gateways que esperan ser adoptados.
+class _DiscoveredBanner extends StatelessWidget {
+  const _DiscoveredBanner({required this.state});
+
+  final IotManagementState state;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final count = state.discovered.length;
+    final building = state.selectedBuilding;
+    return AppCard(
+      tone: AppCardTone.highlighted,
+      onTap: building == null
+          ? null
+          : () async {
+              final cubit = context.read<IotManagementCubit>()..stopAutoRefresh();
+              await context.push(
+                '/admin/iot/discovered',
+                extra: IotDiscoveredArgs(buildingId: building.id, buildingName: building.name, gateways: state.gateways),
+              );
+              if (cubit.isClosed) return;
+              await cubit.refresh();
+              cubit.startAutoRefresh();
+            },
+      child: Row(
+        children: [
+          const Icon(Icons.add_circle_outline, color: AppColors.primary),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(count == 1 ? '1 dispositivo nuevo' : '$count dispositivos nuevos', style: textTheme.titleMedium),
+                Text('El gateway los identificó. Revísalos y adóptalos.', style: textTheme.bodySmall),
+              ],
+            ),
+          ),
+          const Icon(Icons.chevron_right, color: AppColors.onSurfaceVariant),
+        ],
+      ),
+    );
   }
 }
 
