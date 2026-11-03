@@ -34,6 +34,10 @@ abstract class IotManagementState with _$IotManagementState {
     @Default(<String, DeviceTelemetry>{}) Map<String, DeviceTelemetry> telemetry,
     @Default(false) bool telemetryUnavailable,
 
+    /// Nodos que los gateways del edificio identificaron y esperan ser adoptados.
+    /// Complementario: si falla la consulta, la lista queda vacía.
+    @Default(<DiscoveredDevice>[]) List<DiscoveredDevice> discovered,
+
     /// Momento de la última carga exitosa (para "Actualizado hace X s").
     DateTime? updatedAt,
   }) = _IotManagementState;
@@ -152,6 +156,7 @@ class IotManagementCubit extends Cubit<IotManagementState> {
       devices: const [],
       telemetry: const {},
       telemetryUnavailable: false,
+      discovered: const [],
     ));
     await _load(buildingId, request);
   }
@@ -174,9 +179,11 @@ class IotManagementCubit extends Cubit<IotManagementState> {
     final gatewaysCall = Future.sync(() => _iot.getGateways(buildingId));
     final devicesCall = Future.sync(() => _iot.getDevices(buildingId));
     final telemetryCall = _loadTelemetry(buildingId);
+    final discoveredCall = _loadDiscovered(buildingId);
     try {
       final (gateways, devices) = await (gatewaysCall, devicesCall).wait;
       final (byCode, telemetryUnavailable) = await telemetryCall;
+      final discovered = await discoveredCall;
       if (request != _request || isClosed) return;
       emit(state.copyWith(
         status: LoadStatus.ready,
@@ -185,12 +192,21 @@ class IotManagementCubit extends Cubit<IotManagementState> {
         devices: devices,
         telemetry: byCode,
         telemetryUnavailable: telemetryUnavailable,
+        discovered: discovered,
         updatedAt: _now(),
       ));
     } on ParallelWaitError<(List<IotGateway>?, List<IotDevice>?), (AsyncError?, AsyncError?)> catch (e) {
       final cause = e.errors.$1?.error ?? e.errors.$2?.error;
       if (request != _request || isClosed) return;
       emit(state.copyWith(status: LoadStatus.failure, error: _messageFor(cause)));
+    }
+  }
+
+  Future<List<DiscoveredDevice>> _loadDiscovered(int buildingId) async {
+    try {
+      return await _iot.getDiscoveredDevices(buildingId);
+    } catch (_) {
+      return const <DiscoveredDevice>[];
     }
   }
 

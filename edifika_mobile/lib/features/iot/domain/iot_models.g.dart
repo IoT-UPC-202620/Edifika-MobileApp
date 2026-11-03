@@ -131,6 +131,50 @@ Map<String, dynamic> _$DeviceCommandToJson(_DeviceCommand instance) =>
       'resolvedAt': instance.resolvedAt,
     };
 
+_DiscoveredDevice _$DiscoveredDeviceFromJson(Map<String, dynamic> json) =>
+    _DiscoveredDevice(
+      id: (json['id'] as num).toInt(),
+      deviceCode: json['deviceCode'] as String,
+      gatewayId: (json['gatewayId'] as num).toInt(),
+      gatewayCode: json['gatewayCode'] as String? ?? '',
+      buildingId: (json['buildingId'] as num).toInt(),
+      mac: json['mac'] as String? ?? '',
+      firmware: json['firmware'] as String? ?? '',
+      model: json['model'] as String?,
+      capabilities:
+          (json['capabilities'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const <String>[],
+      ip: json['ip'] as String?,
+      rssi: (json['rssi'] as num?)?.toInt(),
+      pairingCode: json['pairingCode'] as String? ?? '',
+      status: json['status'] as String? ?? 'PENDING',
+      deviceId: (json['deviceId'] as num?)?.toInt(),
+      firstSeenAt: json['firstSeenAt'] as String?,
+      lastSeenAt: json['lastSeenAt'] as String?,
+    );
+
+Map<String, dynamic> _$DiscoveredDeviceToJson(_DiscoveredDevice instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'deviceCode': instance.deviceCode,
+      'gatewayId': instance.gatewayId,
+      'gatewayCode': instance.gatewayCode,
+      'buildingId': instance.buildingId,
+      'mac': instance.mac,
+      'firmware': instance.firmware,
+      'model': instance.model,
+      'capabilities': instance.capabilities,
+      'ip': instance.ip,
+      'rssi': instance.rssi,
+      'pairingCode': instance.pairingCode,
+      'status': instance.status,
+      'deviceId': instance.deviceId,
+      'firstSeenAt': instance.firstSeenAt,
+      'lastSeenAt': instance.lastSeenAt,
+    };
+
 _ExistingCardCredential _$ExistingCardCredentialFromJson(
   Map<String, dynamic> json,
 ) => _ExistingCardCredential(

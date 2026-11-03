@@ -18,7 +18,9 @@ mixin _$IotManagementState {
  LoadStatus get buildingsStatus; List<Building> get buildings; int? get selectedBuildingId;/// Carga de gateways y dispositivos del edificio elegido.
  LoadStatus get status; String? get error; List<IotGateway> get gateways; List<IotDevice> get devices;/// Telemetría por `deviceCode`. Es complementaria: si el servicio falla,
 /// los dispositivos se muestran igual y se avisa con [telemetryUnavailable].
- Map<String, DeviceTelemetry> get telemetry; bool get telemetryUnavailable;/// Momento de la última carga exitosa (para "Actualizado hace X s").
+ Map<String, DeviceTelemetry> get telemetry; bool get telemetryUnavailable;/// Nodos que los gateways del edificio identificaron y esperan ser adoptados.
+/// Complementario: si falla la consulta, la lista queda vacía.
+ List<DiscoveredDevice> get discovered;/// Momento de la última carga exitosa (para "Actualizado hace X s").
  DateTime? get updatedAt;
 /// Create a copy of IotManagementState
 /// with the given fields replaced by the non-null parameter values.
@@ -30,16 +32,16 @@ $IotManagementStateCopyWith<IotManagementState> get copyWith => _$IotManagementS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is IotManagementState&&(identical(other.buildingsStatus, buildingsStatus) || other.buildingsStatus == buildingsStatus)&&const DeepCollectionEquality().equals(other.buildings, buildings)&&(identical(other.selectedBuildingId, selectedBuildingId) || other.selectedBuildingId == selectedBuildingId)&&(identical(other.status, status) || other.status == status)&&(identical(other.error, error) || other.error == error)&&const DeepCollectionEquality().equals(other.gateways, gateways)&&const DeepCollectionEquality().equals(other.devices, devices)&&const DeepCollectionEquality().equals(other.telemetry, telemetry)&&(identical(other.telemetryUnavailable, telemetryUnavailable) || other.telemetryUnavailable == telemetryUnavailable)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is IotManagementState&&(identical(other.buildingsStatus, buildingsStatus) || other.buildingsStatus == buildingsStatus)&&const DeepCollectionEquality().equals(other.buildings, buildings)&&(identical(other.selectedBuildingId, selectedBuildingId) || other.selectedBuildingId == selectedBuildingId)&&(identical(other.status, status) || other.status == status)&&(identical(other.error, error) || other.error == error)&&const DeepCollectionEquality().equals(other.gateways, gateways)&&const DeepCollectionEquality().equals(other.devices, devices)&&const DeepCollectionEquality().equals(other.telemetry, telemetry)&&(identical(other.telemetryUnavailable, telemetryUnavailable) || other.telemetryUnavailable == telemetryUnavailable)&&const DeepCollectionEquality().equals(other.discovered, discovered)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,buildingsStatus,const DeepCollectionEquality().hash(buildings),selectedBuildingId,status,error,const DeepCollectionEquality().hash(gateways),const DeepCollectionEquality().hash(devices),const DeepCollectionEquality().hash(telemetry),telemetryUnavailable,updatedAt);
+int get hashCode => Object.hash(runtimeType,buildingsStatus,const DeepCollectionEquality().hash(buildings),selectedBuildingId,status,error,const DeepCollectionEquality().hash(gateways),const DeepCollectionEquality().hash(devices),const DeepCollectionEquality().hash(telemetry),telemetryUnavailable,const DeepCollectionEquality().hash(discovered),updatedAt);
 
 @override
 String toString() {
-  return 'IotManagementState(buildingsStatus: $buildingsStatus, buildings: $buildings, selectedBuildingId: $selectedBuildingId, status: $status, error: $error, gateways: $gateways, devices: $devices, telemetry: $telemetry, telemetryUnavailable: $telemetryUnavailable, updatedAt: $updatedAt)';
+  return 'IotManagementState(buildingsStatus: $buildingsStatus, buildings: $buildings, selectedBuildingId: $selectedBuildingId, status: $status, error: $error, gateways: $gateways, devices: $devices, telemetry: $telemetry, telemetryUnavailable: $telemetryUnavailable, discovered: $discovered, updatedAt: $updatedAt)';
 }
 
 
@@ -50,7 +52,7 @@ abstract mixin class $IotManagementStateCopyWith<$Res>  {
   factory $IotManagementStateCopyWith(IotManagementState value, $Res Function(IotManagementState) _then) = _$IotManagementStateCopyWithImpl;
 @useResult
 $Res call({
- LoadStatus buildingsStatus, List<Building> buildings, int? selectedBuildingId, LoadStatus status, String? error, List<IotGateway> gateways, List<IotDevice> devices, Map<String, DeviceTelemetry> telemetry, bool telemetryUnavailable, DateTime? updatedAt
+ LoadStatus buildingsStatus, List<Building> buildings, int? selectedBuildingId, LoadStatus status, String? error, List<IotGateway> gateways, List<IotDevice> devices, Map<String, DeviceTelemetry> telemetry, bool telemetryUnavailable, List<DiscoveredDevice> discovered, DateTime? updatedAt
 });
 
 
@@ -67,7 +69,7 @@ class _$IotManagementStateCopyWithImpl<$Res>
 
 /// Create a copy of IotManagementState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? buildingsStatus = null,Object? buildings = null,Object? selectedBuildingId = freezed,Object? status = null,Object? error = freezed,Object? gateways = null,Object? devices = null,Object? telemetry = null,Object? telemetryUnavailable = null,Object? updatedAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? buildingsStatus = null,Object? buildings = null,Object? selectedBuildingId = freezed,Object? status = null,Object? error = freezed,Object? gateways = null,Object? devices = null,Object? telemetry = null,Object? telemetryUnavailable = null,Object? discovered = null,Object? updatedAt = freezed,}) {
   return _then(_self.copyWith(
 buildingsStatus: null == buildingsStatus ? _self.buildingsStatus : buildingsStatus // ignore: cast_nullable_to_non_nullable
 as LoadStatus,buildings: null == buildings ? _self.buildings : buildings // ignore: cast_nullable_to_non_nullable
@@ -78,7 +80,8 @@ as String?,gateways: null == gateways ? _self.gateways : gateways // ignore: cas
 as List<IotGateway>,devices: null == devices ? _self.devices : devices // ignore: cast_nullable_to_non_nullable
 as List<IotDevice>,telemetry: null == telemetry ? _self.telemetry : telemetry // ignore: cast_nullable_to_non_nullable
 as Map<String, DeviceTelemetry>,telemetryUnavailable: null == telemetryUnavailable ? _self.telemetryUnavailable : telemetryUnavailable // ignore: cast_nullable_to_non_nullable
-as bool,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as bool,discovered: null == discovered ? _self.discovered : discovered // ignore: cast_nullable_to_non_nullable
+as List<DiscoveredDevice>,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,
   ));
 }
@@ -164,10 +167,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( LoadStatus buildingsStatus,  List<Building> buildings,  int? selectedBuildingId,  LoadStatus status,  String? error,  List<IotGateway> gateways,  List<IotDevice> devices,  Map<String, DeviceTelemetry> telemetry,  bool telemetryUnavailable,  DateTime? updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( LoadStatus buildingsStatus,  List<Building> buildings,  int? selectedBuildingId,  LoadStatus status,  String? error,  List<IotGateway> gateways,  List<IotDevice> devices,  Map<String, DeviceTelemetry> telemetry,  bool telemetryUnavailable,  List<DiscoveredDevice> discovered,  DateTime? updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _IotManagementState() when $default != null:
-return $default(_that.buildingsStatus,_that.buildings,_that.selectedBuildingId,_that.status,_that.error,_that.gateways,_that.devices,_that.telemetry,_that.telemetryUnavailable,_that.updatedAt);case _:
+return $default(_that.buildingsStatus,_that.buildings,_that.selectedBuildingId,_that.status,_that.error,_that.gateways,_that.devices,_that.telemetry,_that.telemetryUnavailable,_that.discovered,_that.updatedAt);case _:
   return orElse();
 
 }
@@ -185,10 +188,10 @@ return $default(_that.buildingsStatus,_that.buildings,_that.selectedBuildingId,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( LoadStatus buildingsStatus,  List<Building> buildings,  int? selectedBuildingId,  LoadStatus status,  String? error,  List<IotGateway> gateways,  List<IotDevice> devices,  Map<String, DeviceTelemetry> telemetry,  bool telemetryUnavailable,  DateTime? updatedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( LoadStatus buildingsStatus,  List<Building> buildings,  int? selectedBuildingId,  LoadStatus status,  String? error,  List<IotGateway> gateways,  List<IotDevice> devices,  Map<String, DeviceTelemetry> telemetry,  bool telemetryUnavailable,  List<DiscoveredDevice> discovered,  DateTime? updatedAt)  $default,) {final _that = this;
 switch (_that) {
 case _IotManagementState():
-return $default(_that.buildingsStatus,_that.buildings,_that.selectedBuildingId,_that.status,_that.error,_that.gateways,_that.devices,_that.telemetry,_that.telemetryUnavailable,_that.updatedAt);case _:
+return $default(_that.buildingsStatus,_that.buildings,_that.selectedBuildingId,_that.status,_that.error,_that.gateways,_that.devices,_that.telemetry,_that.telemetryUnavailable,_that.discovered,_that.updatedAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -205,10 +208,10 @@ return $default(_that.buildingsStatus,_that.buildings,_that.selectedBuildingId,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( LoadStatus buildingsStatus,  List<Building> buildings,  int? selectedBuildingId,  LoadStatus status,  String? error,  List<IotGateway> gateways,  List<IotDevice> devices,  Map<String, DeviceTelemetry> telemetry,  bool telemetryUnavailable,  DateTime? updatedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( LoadStatus buildingsStatus,  List<Building> buildings,  int? selectedBuildingId,  LoadStatus status,  String? error,  List<IotGateway> gateways,  List<IotDevice> devices,  Map<String, DeviceTelemetry> telemetry,  bool telemetryUnavailable,  List<DiscoveredDevice> discovered,  DateTime? updatedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _IotManagementState() when $default != null:
-return $default(_that.buildingsStatus,_that.buildings,_that.selectedBuildingId,_that.status,_that.error,_that.gateways,_that.devices,_that.telemetry,_that.telemetryUnavailable,_that.updatedAt);case _:
+return $default(_that.buildingsStatus,_that.buildings,_that.selectedBuildingId,_that.status,_that.error,_that.gateways,_that.devices,_that.telemetry,_that.telemetryUnavailable,_that.discovered,_that.updatedAt);case _:
   return null;
 
 }
@@ -220,7 +223,7 @@ return $default(_that.buildingsStatus,_that.buildings,_that.selectedBuildingId,_
 
 
 class _IotManagementState extends IotManagementState {
-  const _IotManagementState({this.buildingsStatus = LoadStatus.loading, final  List<Building> buildings = const <Building>[], this.selectedBuildingId, this.status = LoadStatus.loading, this.error, final  List<IotGateway> gateways = const <IotGateway>[], final  List<IotDevice> devices = const <IotDevice>[], final  Map<String, DeviceTelemetry> telemetry = const <String, DeviceTelemetry>{}, this.telemetryUnavailable = false, this.updatedAt}): _buildings = buildings,_gateways = gateways,_devices = devices,_telemetry = telemetry,super._();
+  const _IotManagementState({this.buildingsStatus = LoadStatus.loading, final  List<Building> buildings = const <Building>[], this.selectedBuildingId, this.status = LoadStatus.loading, this.error, final  List<IotGateway> gateways = const <IotGateway>[], final  List<IotDevice> devices = const <IotDevice>[], final  Map<String, DeviceTelemetry> telemetry = const <String, DeviceTelemetry>{}, this.telemetryUnavailable = false, final  List<DiscoveredDevice> discovered = const <DiscoveredDevice>[], this.updatedAt}): _buildings = buildings,_gateways = gateways,_devices = devices,_telemetry = telemetry,_discovered = discovered,super._();
   
 
 /// Carga de la lista de edificios.
@@ -262,6 +265,17 @@ class _IotManagementState extends IotManagementState {
 }
 
 @override@JsonKey() final  bool telemetryUnavailable;
+/// Nodos que los gateways del edificio identificaron y esperan ser adoptados.
+/// Complementario: si falla la consulta, la lista queda vacía.
+ final  List<DiscoveredDevice> _discovered;
+/// Nodos que los gateways del edificio identificaron y esperan ser adoptados.
+/// Complementario: si falla la consulta, la lista queda vacía.
+@override@JsonKey() List<DiscoveredDevice> get discovered {
+  if (_discovered is EqualUnmodifiableListView) return _discovered;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_discovered);
+}
+
 /// Momento de la última carga exitosa (para "Actualizado hace X s").
 @override final  DateTime? updatedAt;
 
@@ -275,16 +289,16 @@ _$IotManagementStateCopyWith<_IotManagementState> get copyWith => __$IotManageme
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _IotManagementState&&(identical(other.buildingsStatus, buildingsStatus) || other.buildingsStatus == buildingsStatus)&&const DeepCollectionEquality().equals(other._buildings, _buildings)&&(identical(other.selectedBuildingId, selectedBuildingId) || other.selectedBuildingId == selectedBuildingId)&&(identical(other.status, status) || other.status == status)&&(identical(other.error, error) || other.error == error)&&const DeepCollectionEquality().equals(other._gateways, _gateways)&&const DeepCollectionEquality().equals(other._devices, _devices)&&const DeepCollectionEquality().equals(other._telemetry, _telemetry)&&(identical(other.telemetryUnavailable, telemetryUnavailable) || other.telemetryUnavailable == telemetryUnavailable)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _IotManagementState&&(identical(other.buildingsStatus, buildingsStatus) || other.buildingsStatus == buildingsStatus)&&const DeepCollectionEquality().equals(other._buildings, _buildings)&&(identical(other.selectedBuildingId, selectedBuildingId) || other.selectedBuildingId == selectedBuildingId)&&(identical(other.status, status) || other.status == status)&&(identical(other.error, error) || other.error == error)&&const DeepCollectionEquality().equals(other._gateways, _gateways)&&const DeepCollectionEquality().equals(other._devices, _devices)&&const DeepCollectionEquality().equals(other._telemetry, _telemetry)&&(identical(other.telemetryUnavailable, telemetryUnavailable) || other.telemetryUnavailable == telemetryUnavailable)&&const DeepCollectionEquality().equals(other._discovered, _discovered)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,buildingsStatus,const DeepCollectionEquality().hash(_buildings),selectedBuildingId,status,error,const DeepCollectionEquality().hash(_gateways),const DeepCollectionEquality().hash(_devices),const DeepCollectionEquality().hash(_telemetry),telemetryUnavailable,updatedAt);
+int get hashCode => Object.hash(runtimeType,buildingsStatus,const DeepCollectionEquality().hash(_buildings),selectedBuildingId,status,error,const DeepCollectionEquality().hash(_gateways),const DeepCollectionEquality().hash(_devices),const DeepCollectionEquality().hash(_telemetry),telemetryUnavailable,const DeepCollectionEquality().hash(_discovered),updatedAt);
 
 @override
 String toString() {
-  return 'IotManagementState(buildingsStatus: $buildingsStatus, buildings: $buildings, selectedBuildingId: $selectedBuildingId, status: $status, error: $error, gateways: $gateways, devices: $devices, telemetry: $telemetry, telemetryUnavailable: $telemetryUnavailable, updatedAt: $updatedAt)';
+  return 'IotManagementState(buildingsStatus: $buildingsStatus, buildings: $buildings, selectedBuildingId: $selectedBuildingId, status: $status, error: $error, gateways: $gateways, devices: $devices, telemetry: $telemetry, telemetryUnavailable: $telemetryUnavailable, discovered: $discovered, updatedAt: $updatedAt)';
 }
 
 
@@ -295,7 +309,7 @@ abstract mixin class _$IotManagementStateCopyWith<$Res> implements $IotManagemen
   factory _$IotManagementStateCopyWith(_IotManagementState value, $Res Function(_IotManagementState) _then) = __$IotManagementStateCopyWithImpl;
 @override @useResult
 $Res call({
- LoadStatus buildingsStatus, List<Building> buildings, int? selectedBuildingId, LoadStatus status, String? error, List<IotGateway> gateways, List<IotDevice> devices, Map<String, DeviceTelemetry> telemetry, bool telemetryUnavailable, DateTime? updatedAt
+ LoadStatus buildingsStatus, List<Building> buildings, int? selectedBuildingId, LoadStatus status, String? error, List<IotGateway> gateways, List<IotDevice> devices, Map<String, DeviceTelemetry> telemetry, bool telemetryUnavailable, List<DiscoveredDevice> discovered, DateTime? updatedAt
 });
 
 
@@ -312,7 +326,7 @@ class __$IotManagementStateCopyWithImpl<$Res>
 
 /// Create a copy of IotManagementState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? buildingsStatus = null,Object? buildings = null,Object? selectedBuildingId = freezed,Object? status = null,Object? error = freezed,Object? gateways = null,Object? devices = null,Object? telemetry = null,Object? telemetryUnavailable = null,Object? updatedAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? buildingsStatus = null,Object? buildings = null,Object? selectedBuildingId = freezed,Object? status = null,Object? error = freezed,Object? gateways = null,Object? devices = null,Object? telemetry = null,Object? telemetryUnavailable = null,Object? discovered = null,Object? updatedAt = freezed,}) {
   return _then(_IotManagementState(
 buildingsStatus: null == buildingsStatus ? _self.buildingsStatus : buildingsStatus // ignore: cast_nullable_to_non_nullable
 as LoadStatus,buildings: null == buildings ? _self._buildings : buildings // ignore: cast_nullable_to_non_nullable
@@ -323,7 +337,8 @@ as String?,gateways: null == gateways ? _self._gateways : gateways // ignore: ca
 as List<IotGateway>,devices: null == devices ? _self._devices : devices // ignore: cast_nullable_to_non_nullable
 as List<IotDevice>,telemetry: null == telemetry ? _self._telemetry : telemetry // ignore: cast_nullable_to_non_nullable
 as Map<String, DeviceTelemetry>,telemetryUnavailable: null == telemetryUnavailable ? _self.telemetryUnavailable : telemetryUnavailable // ignore: cast_nullable_to_non_nullable
-as bool,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as bool,discovered: null == discovered ? _self._discovered : discovered // ignore: cast_nullable_to_non_nullable
+as List<DiscoveredDevice>,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,
   ));
 }

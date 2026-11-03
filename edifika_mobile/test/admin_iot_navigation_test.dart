@@ -24,7 +24,7 @@ void main() {
         'GET /api/v1/telemetry/devices': const FakeRoute(200, [telemetryJson]),
       });
 
-  Future<FakeHttpAdapter> launch(WidgetTester tester, {required List<String> roles}) async {
+  Future<FakeHttpAdapter> launchWith(WidgetTester tester, FakeHttpAdapter api, {required List<String> roles}) async {
     tester.view.physicalSize = const Size(1080, 2400);
     tester.view.devicePixelRatio = 2.75;
     addTearDown(tester.view.reset);
@@ -38,11 +38,13 @@ void main() {
         'fullName': 'Ricardo Mendoza',
         'roles': roles,
       });
-    final api = fakeApi();
     await tester.pumpWidget(EdifikaApp(dependencies: AppDependencies.create(session: session, httpAdapter: api)));
     await tester.pumpAndSettle();
     return api;
   }
+
+  Future<FakeHttpAdapter> launch(WidgetTester tester, {required List<String> roles}) =>
+      launchWith(tester, fakeApi(), roles: roles);
 
   testWidgets('el administrador entra directo a Gestión IoT, sin la barra del residente', (tester) async {
     await launch(tester, roles: ['ADMIN']);
@@ -60,7 +62,8 @@ void main() {
     final api = await launch(tester, roles: ['ADMIN']);
 
     final iotCalls = api.requests.where((r) => r.uri.path.contains('/iot/') || r.uri.path.contains('/telemetry/'));
-    expect(iotCalls, hasLength(3));
+    // Gateways, dispositivos, telemetría y dispositivos nuevos
+    expect(iotCalls, hasLength(4));
     expect(iotCalls.every((r) => r.queryParameters['buildingId'] == 12), isTrue);
   });
 
@@ -213,6 +216,70 @@ void main() {
     expect(find.text('Activa'), findsOneWidget);
     final patch = api.requests.where((r) => r.method == 'POST' && r.uri.path == '/api/v1/access/credentials').single;
     expect(patch.data, containsPair('userId', 4));
+  });
+
+  testWidgets('un dispositivo identificado por el gateway se adopta desde el teléfono', (tester) async {
+    const discovered = {
+      'id': 4,
+      'deviceCode': 'esp32-3c71bf',
+      'gatewayId': 1,
+      'gatewayCode': 'edge-gateway-01',
+      'buildingId': 12,
+      'mac': '24:6F:28:3C:71:BF',
+      'firmware': 'v0.6.0',
+      'model': 'door-node',
+      'capabilities': ['RFID', 'LOCK', 'OLED'],
+      'pairingCode': '4821',
+      'status': 'PENDING',
+      'firstSeenAt': '2026-11-03T15:04:05Z',
+      'lastSeenAt': '2026-11-03T15:09:05Z',
+    };
+    final api = fakeApi()..routes['GET /api/v1/iot/discovered-devices'] = const FakeRoute(200, [discovered]);
+    await launchWith(tester, api, roles: ['ADMIN']);
+    api.routes['POST /api/v1/iot/discovered-devices/4/identify'] = const FakeRoute(202, null);
+    api.routes['POST /api/v1/iot/discovered-devices/4/adopt'] =
+        FakeRoute(201, {...deviceJson, 'id': 9, 'deviceCode': 'esp32-3c71bf', 'name': 'Puerta gimnasio', 'status': 'PROVISIONED'});
+
+    expect(find.text('1 dispositivo nuevo'), findsOneWidget);
+    await tester.tap(find.text('1 dispositivo nuevo'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Dispositivos nuevos'), findsOneWidget);
+    expect(find.text('Código en pantalla: 4821'), findsOneWidget);
+    await tester.tap(find.text('esp32-3c71bf'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Adoptar dispositivo'), findsOneWidget);
+    expect(find.text('4821'), findsOneWidget);
+
+    await tester.tap(find.text('Identificar (parpadea y suena)'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('parpadea en blanco'), findsOneWidget);
+    await tester.pump(const Duration(seconds: 5)); // el aviso se cierra solo y deja libre el botón
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.widgetWithText(TextField, 'Puerta gimnasio'), 'Puerta gimnasio');
+    await tester.enterText(find.widgetWithText(TextField, 'Piso 2'), 'Piso 2');
+    // Ya adoptado, el gateway deja de reportarlo
+    api.routes['GET /api/v1/iot/discovered-devices'] = const FakeRoute(200, []);
+    FocusManager.instance.primaryFocus?.unfocus(); // el campo con foco no vuelve a desplazar la vista
+    await tester.pumpAndSettle();
+    final adopt = find.text('Adoptar');
+    await tester.ensureVisible(adopt);
+    await tester.pumpAndSettle();
+    await tester.tap(adopt);
+    await tester.pumpAndSettle();
+
+    final request = api.requests.lastWhere((r) => r.uri.path == '/api/v1/iot/discovered-devices/4/adopt');
+    expect(request.data, {
+      'name': 'Puerta gimnasio',
+      'location': 'Piso 2',
+      'deviceType': 'DOOR',
+      'capabilities': ['RFID', 'LOCK', 'OLED'],
+      'unlockSeconds': 5,
+    });
+    expect(find.text('Dispositivos nuevos'), findsOneWidget);
+    expect(find.textContaining('No hay dispositivos esperando'), findsOneWidget);
   });
 
   testWidgets('un residente sigue entrando a sus pestañas, no a la gestión IoT', (tester) async {

@@ -149,4 +149,18 @@ void main() {
     expect(cubit.state.selectedBuildingId, 12);
     expect(cubit.state.devices.single.name, 'De Torre Mirador');
   });
+
+  test('carga los dispositivos nuevos del edificio; si fallan, la pantalla igual se muestra', () async {
+    const pending = DiscoveredDevice(id: 4, deviceCode: 'esp32-3c71bf', gatewayId: 1, buildingId: 1, pairingCode: '4821');
+    when(() => iot.getDiscoveredDevices(1)).thenAnswer((_) async => [pending]);
+
+    final cubit = build();
+    await cubit.start();
+    expect(cubit.state.discovered.single.deviceCode, 'esp32-3c71bf');
+
+    when(() => iot.getDiscoveredDevices(1)).thenThrow(const ApiException(ApiErrorKind.server, 'Error'));
+    await cubit.refresh();
+    expect(cubit.state.status, LoadStatus.ready);
+    expect(cubit.state.discovered, isEmpty);
+  });
 }

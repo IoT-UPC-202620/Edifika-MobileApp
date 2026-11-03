@@ -107,6 +107,46 @@ class IotRepositoryImpl implements IotRepository {
       });
 
   @override
+  Future<List<DiscoveredDevice>> getDiscoveredDevices(int buildingId) => guardApiCall(() async {
+        final response =
+            await _dio.get<Object>(ApiEndpoints.iotDiscoveredDevices, queryParameters: {'buildingId': buildingId});
+        return parseList(response.data, DiscoveredDevice.fromJson);
+      });
+
+  @override
+  Future<void> identifyDiscoveredDevice(int discoveredId, {int seconds = 10}) => guardApiCall(() async {
+        await _dio.post<void>('${ApiEndpoints.iotDiscoveredDevices}/$discoveredId/identify', data: {'seconds': seconds});
+      });
+
+  @override
+  Future<IotDevice> adoptDiscoveredDevice(
+    int discoveredId, {
+    required String name,
+    required String location,
+    required List<String> capabilities,
+    required int unlockSeconds,
+    String deviceType = 'DOOR',
+  }) =>
+      guardApiCall(() async {
+        final response = await _dio.post<Map<String, dynamic>>(
+          '${ApiEndpoints.iotDiscoveredDevices}/$discoveredId/adopt',
+          data: {
+            'name': name,
+            'location': location,
+            'deviceType': deviceType,
+            'capabilities': capabilities,
+            'unlockSeconds': unlockSeconds,
+          },
+        );
+        return IotDevice.fromJson(response.data!);
+      });
+
+  @override
+  Future<void> ignoreDiscoveredDevice(int discoveredId) => guardApiCall(() async {
+        await _dio.post<void>('${ApiEndpoints.iotDiscoveredDevices}/$discoveredId/ignore');
+      });
+
+  @override
   Future<List<AccessCredential>> getCredentials(int buildingId) => guardApiCall(() async {
         final response = await _dio.get<Object>(ApiEndpoints.accessCredentials, queryParameters: {'buildingId': buildingId});
         return parseList(response.data, AccessCredential.fromJson);

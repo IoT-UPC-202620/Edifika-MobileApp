@@ -48,6 +48,27 @@ abstract class IotRepository {
     required String holderName,
   });
 
+  /// `GET /iot/discovered-devices?buildingId=`: nodos identificados por los gateways
+  /// del edificio que esperan ser adoptados.
+  Future<List<DiscoveredDevice>> getDiscoveredDevices(int buildingId);
+
+  /// `POST /iot/discovered-devices/{id}/identify`: el nodo parpadea y suena.
+  Future<void> identifyDiscoveredDevice(int discoveredId, {int seconds = 10});
+
+  /// `POST /iot/discovered-devices/{id}/adopt`: crea el dispositivo (queda `PROVISIONED`
+  /// y pasa a `ACTIVE` con su primer heartbeat).
+  Future<IotDevice> adoptDiscoveredDevice(
+    int discoveredId, {
+    required String name,
+    required String location,
+    required List<String> capabilities,
+    required int unlockSeconds,
+    String deviceType = 'DOOR',
+  });
+
+  /// `POST /iot/discovered-devices/{id}/ignore`: deja de listarse como pendiente.
+  Future<void> ignoreDiscoveredDevice(int discoveredId);
+
   /// `GET /access/credentials?buildingId=`: tarjetas registradas en el edificio.
   Future<List<AccessCredential>> getCredentials(int buildingId);
 
