@@ -29,4 +29,12 @@ class ApiEndpoints {
 
   static const String notifications = '/notifications';
   static const String deviceTokens = '/device-tokens';
+
+  // IoT (solo microservicios; la fake API no los tiene). Contrato en
+  // Edifika-IoT-Platform/contracts/schemas/rest.
+  static const String iotGateways = '/iot/gateways';
+  static const String iotDevices = '/iot/devices';
+  static const String iotDeviceCommands = '/iot/device-commands';
+  static const String accessCredentials = '/access/credentials';
+  static const String telemetryDevices = '/telemetry/devices';
 }
