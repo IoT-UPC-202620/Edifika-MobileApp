@@ -11,6 +11,10 @@ import '../features/forum/presentation/community_screen.dart';
 import '../features/forum/presentation/new_post_screen.dart';
 import '../features/forum/presentation/post_detail_screen.dart';
 import '../features/home/presentation/home_screen.dart';
+import '../features/iot/presentation/iot_cards_screen.dart';
+import '../features/iot/presentation/iot_device_detail_screen.dart';
+import '../features/iot/presentation/iot_management_screen.dart';
+import '../features/iot/presentation/iot_routes_args.dart';
 import '../features/notifications/presentation/notifications_screen.dart';
 import '../features/payments/presentation/debts_screen.dart';
 import '../features/payments/presentation/payments_screen.dart';
@@ -28,12 +32,29 @@ GoRouter createRouter(SessionCubit session) {
       return switch (session.state.status) {
         SessionStatus.unknown => location == '/splash' ? null : '/splash',
         SessionStatus.unauthenticated => location == '/login' ? null : '/login',
-        SessionStatus.authenticated => location == '/login' || location == '/splash' ? '/home' : null,
+        SessionStatus.authenticated => _authenticatedRedirect(location, isAdmin: session.state.user?.isAdmin ?? false),
       };
     },
     routes: [
       GoRoute(path: '/splash', builder: (context, state) => const Scaffold(body: Center(child: LoadingView()))),
       GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
+      // Navegación del administrador: solo la gestión IoT, sin la barra de residente.
+      GoRoute(
+        path: _adminHome,
+        builder: (context, state) => const IotManagementScreen(),
+        routes: [
+          GoRoute(
+            path: 'device',
+            redirect: (context, state) => state.extra is IotDeviceDetailArgs ? null : _adminHome,
+            builder: (context, state) => IotDeviceDetailScreen(args: state.extra! as IotDeviceDetailArgs),
+          ),
+          GoRoute(
+            path: 'cards',
+            redirect: (context, state) => state.extra is IotCardsArgs ? null : _adminHome,
+            builder: (context, state) => IotCardsScreen(args: state.extra! as IotCardsArgs),
+          ),
+        ],
+      ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, shell) => _ResidentShell(shell: shell),
         branches: [
@@ -90,6 +111,18 @@ GoRouter createRouter(SessionCubit session) {
       ),
     ],
   );
+}
+
+const _adminHome = '/admin/iot';
+
+/// Cada rol queda dentro de su propia navegación: el administrador en
+/// `/admin/...` y el residente en sus pestañas.
+String? _authenticatedRedirect(String location, {required bool isAdmin}) {
+  final home = isAdmin ? _adminHome : '/home';
+  if (location == '/login' || location == '/splash') return home;
+  final inAdminArea = location.startsWith('/admin');
+  if (isAdmin != inAdminArea) return home;
+  return null;
 }
 
 /// Barra inferior de 5 pestañas, visible en todas las pantallas del residente.

@@ -25,6 +25,13 @@ class Formatters {
     return parsed == null ? '' : DateFormat('dd/MM/yyyy · HH:mm').format(parsed);
   }
 
+  /// Instante UTC de los microservicios (`2026-10-23T15:00:00Z`) en hora
+  /// local: `23/10/2026 · 10:00`. `null` o ilegible → `fallback`.
+  static String instant(String? iso, {String fallback = 'Nunca'}) {
+    final parsed = iso == null ? null : DateTime.tryParse(iso);
+    return parsed == null ? fallback : DateFormat('dd/MM/yyyy · HH:mm').format(parsed.toLocal());
+  }
+
   /// `Viernes, 09 de octubre`
   static String longDay(DateTime date) {
     final text = DateFormat("EEEE, dd 'de' MMMM", 'es').format(date);

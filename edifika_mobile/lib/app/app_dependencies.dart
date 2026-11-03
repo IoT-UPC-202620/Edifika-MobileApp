@@ -11,6 +11,8 @@ import '../features/auth/data/auth_repository_impl.dart';
 import '../features/auth/domain/auth_repository.dart';
 import '../features/forum/data/forum_repository_impl.dart';
 import '../features/forum/domain/forum_repository.dart';
+import '../features/iot/data/iot_repository_impl.dart';
+import '../features/iot/domain/iot_repository.dart';
 import '../features/notifications/data/notifications_repository_impl.dart';
 import '../features/notifications/domain/notifications_repository.dart';
 import '../features/payments/data/payments_repository_impl.dart';
@@ -37,6 +39,7 @@ class AppDependencies {
     required this.notifications,
     required this.announcements,
     required this.profile,
+    required this.iot,
   });
 
   /// `httpAdapter` solo se usa en pruebas (respuestas HTTP simuladas).
@@ -59,6 +62,7 @@ class AppDependencies {
       notifications: NotificationsRepositoryImpl(dio, changes),
       announcements: AnnouncementsRepositoryImpl(dio, changes),
       profile: ProfileRepositoryImpl(dio),
+      iot: IotRepositoryImpl(dio),
     );
   }
 
@@ -78,4 +82,7 @@ class AppDependencies {
   final NotificationsRepository notifications;
   final AnnouncementsRepository announcements;
   final ProfileRepository profile;
+
+  /// Gestión IoT del administrador (solo microservicios).
+  final IotRepository iot;
 }

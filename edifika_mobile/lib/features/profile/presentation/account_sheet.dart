@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/feedback_views.dart';
+import '../../auth/domain/authenticated_user.dart';
 import '../../auth/presentation/session_cubit.dart';
 
 /// Figma no diseña una pantalla de perfil; esta hoja mínima muestra los datos
@@ -41,7 +42,10 @@ Future<void> showAccountSheet(BuildContext context) {
                 ],
               ),
               const SizedBox(height: AppSpacing.lg),
-              Text('${roleLabel(user.roles)} · ${residence?.location ?? ''}', style: textTheme.bodyMedium),
+              Text(
+                residence == null ? roleLabel(user.roles) : '${roleLabel(user.roles)} · ${residence.location}',
+                style: textTheme.bodyMedium,
+              ),
               const SizedBox(height: AppSpacing.xxl),
               OutlinedButton.icon(
                 onPressed: () {
@@ -60,7 +64,8 @@ Future<void> showAccountSheet(BuildContext context) {
 }
 
 String roleLabel(List<String> roles) {
-  final upper = roles.map((r) => r.toUpperCase()).toSet();
+  final upper = roles.map(normalizeRole).toSet();
+  if (upper.contains('ADMIN')) return 'Administrador';
   if (upper.contains('OWNER')) return 'Propietario';
   if (upper.contains('TENANT')) return 'Inquilino';
   return 'Residente';

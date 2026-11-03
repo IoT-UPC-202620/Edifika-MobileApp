@@ -26,7 +26,62 @@ App móvil Flutter de **Edifika** (startup Condomia) para residentes: propietari
    flutter run -d emulator-5554
    ```
 
-**Cuentas de prueba (`server/db.json` → `authentication`):** `resident@edifika.com` (TENANT) y `owner@edifika.com` (OWNER). Las cuentas `ADMIN` son rechazadas: la administración usa la app web.
+**Cuentas de prueba (`server/db.json` → `authentication`):** `resident@edifika.com` (TENANT) y `owner@edifika.com` (OWNER). Las cuentas `ADMIN` entran a la **Gestión IoT** (ver abajo); con la fake API esa pantalla muestra un aviso porque json-server no tiene rutas IoT.
+
+## Roles
+
+| Rol | Navegación en la app |
+|---|---|
+| `OWNER`, `TENANT` | Pestañas del residente (Inicio, Cuenta, Reservas, Anuncios, Comunidad) |
+| `ADMIN` | Solo **Gestión IoT** (`/admin/iot`), sin la barra del residente |
+| Sin rol habilitado | Rechazado en el login |
+
+El IAM real responde a `sign-in` solo `{ id, email, token }`; los roles se leen del claim `roles` del JWT (con o sin el prefijo `ROLE_`). La fake API sí los envía en el cuerpo. El router mantiene a cada rol dentro de su navegación.
+
+## Gestión IoT (administrador)
+
+Pantalla para supervisar los dispositivos IoT de un edificio y registrar sus tarjetas RFID. No tiene diseño en Figma: usa los tokens y componentes de la app.
+
+- **Edificio:** selector con `GET /residential/buildings` (acepta `id` de la fake API o `idBuilding` del microservicio).
+- **Resumen:** dispositivos En línea / Sin conexión / Mantenimiento / Por activar.
+- **Gateways y dispositivos:** cada gateway del edificio con su estado y última sincronización, y debajo sus dispositivos con estado, última conexión y últimas lecturas (temperatura y humedad del DHT11).
+- **Detalle del dispositivo** (`/admin/iot/device`): estado, firmware, modo de acceso, reserva activa, segundos de apertura, color del LED, sensores, componentes del nodo ESP32 (RFID RC522, cerradura por relé, buzzer, OLED, LED RGB, DHT11) y gateway.
+
+| Dato | Endpoint (rol ADMIN) | Servicio |
+|---|---|---|
+| Gateways del edificio | `GET /iot/gateways?buildingId=` | IoT Access Management |
+| Dispositivos del edificio | `GET /iot/devices?buildingId=` | IoT Access Management |
+| Telemetría | `GET /telemetry/devices?buildingId=` | IoT Telemetry (si falla, se muestran los dispositivos sin lecturas) |
+
+El emparejamiento **edificio → gateway → dispositivo** se hace por ahora manualmente en el backend (`POST /iot/gateways`, `POST /iot/devices`). Abrir la puerta y el modo mantenimiento quedan para una próxima versión.
+
+### Tarjetas RFID
+
+Todo el registro de tarjetas se hace desde el teléfono, con la sesión de administrador:
+
+1. **Gestión IoT → Tarjetas RFID** (`/admin/iot/cards`): lista las tarjetas del edificio con titular, email, rol y estado (filtros Todas / Activas / Inactivas).
+2. **Leer tarjeta en un lector:** se elige el lector en línea (si hay uno solo, se abre directo). El detalle del dispositivo entra en **modo registro** durante 60 s: el LED del nodo se pone cian, el OLED muestra `MODO REGISTRO` y la puerta no se abre.
+3. Al acercar la tarjeta, la app muestra el UID capturado y una lista de usuarios: primero los residentes del edificio y después el resto. Queda elegido de entrada el primero que no es solo administrador (por ejemplo, el propietario por defecto).
+4. **Asociar** crea la credencial (`POST /access/credentials`), el gateway se resincroniza y la tarjeta abre la puerta.
+5. Tocando una tarjeta de la lista se puede **suspender, reactivar, marcar como perdida o revocar** (`PATCH /access/credentials/{id}/status`). Una tarjeta revocada o perdida se puede volver a leer y asignar a otro usuario.
+
+| Acción | Endpoint (rol ADMIN) |
+|---|---|
+| Modo registro | `POST` / `GET` / `DELETE /iot/devices/{id}/enrollment` |
+| Tarjetas del edificio | `GET /access/credentials?buildingId=` |
+| Asociar tarjeta | `POST /access/credentials` |
+| Cambiar estado | `PATCH /access/credentials/{id}/status` |
+
+**Usuarios por defecto** (los crea el IAM al arrancar si no existen):
+
+| Rol | Email | Contraseña |
+|---|---|---|
+| Administrador | `admin@edifika.com` | `Edifika#2026` |
+| Propietario | `propietario@edifika.com` | `Edifika#2026` |
+
+Se cambian con `SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD`, `SEED_OWNER_EMAIL` y `SEED_OWNER_PASSWORD`, y el seed se desactiva con `SEED_DEFAULT_USERS=false`.
+
+Para probarla en vivo hay que apuntar a los microservicios: `flutter run --dart-define=API_BASE_URL=http://10.0.2.2:8080/api/v1` (API Gateway local). Los modelos siguen `Edifika-IoT-Platform/contracts` y las pruebas usan sus ejemplos.
 
 ## Cambiar de fake API a microservicios
 

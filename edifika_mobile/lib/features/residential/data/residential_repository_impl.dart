@@ -11,6 +11,12 @@ class ResidentialRepositoryImpl implements ResidentialRepository {
   final Dio _dio;
 
   @override
+  Future<List<Building>> getBuildings() => guardApiCall(() async {
+        final response = await _dio.get<Object>(ApiEndpoints.buildings);
+        return parseList(response.data, Building.fromJson);
+      });
+
+  @override
   Future<Building> getBuilding(int buildingId) => guardApiCall(() async {
         final response = await _dio.get<Map<String, dynamic>>('${ApiEndpoints.buildings}/$buildingId');
         return Building.fromJson(response.data!);
@@ -22,14 +28,19 @@ class ResidentialRepositoryImpl implements ResidentialRepository {
         return Unit.fromJson(response.data!);
       });
 
+  @override
+  Future<List<UserUnit>> getBuildingResidents(int buildingId) => guardApiCall(() async {
+        final response = await _dio.get<Object>('${ApiEndpoints.buildings}/$buildingId/residents');
+        return parseList(response.data, UserUnit.fromJson);
+      });
+
   /// Usa la misma ruta que `UserUnitsService.getResidentsByBuildingId` del web.
   @override
-  Future<UserUnit?> getActiveUserUnit({required int buildingId, required int userId}) => guardApiCall(() async {
-        final response = await _dio.get<Object>('${ApiEndpoints.buildings}/$buildingId/residents');
-        final relations = parseList(response.data, UserUnit.fromJson);
-        for (final relation in relations) {
-          if (relation.idUser == userId && relation.isActive) return relation;
-        }
-        return null;
-      });
+  Future<UserUnit?> getActiveUserUnit({required int buildingId, required int userId}) async {
+    final relations = await getBuildingResidents(buildingId);
+    for (final relation in relations) {
+      if (relation.idUser == userId && relation.isActive) return relation;
+    }
+    return null;
+  }
 }

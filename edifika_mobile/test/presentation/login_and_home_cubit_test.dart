@@ -33,16 +33,28 @@ void main() {
       expect(cubit.state.error, isNull);
     });
 
-    test('un administrador es rechazado y su sesión se cierra', () async {
+    test('un administrador inicia sesión (va a la gestión IoT)', () async {
       when(() => auth.signIn(email: any(named: 'email'), password: any(named: 'password'), remember: any(named: 'remember')))
-          .thenAnswer((_) async => tenant.copyWith(roles: ['ADMIN']));
-      when(() => auth.signOut()).thenAnswer((_) async {});
+          .thenAnswer((_) async => admin);
       final cubit = LoginCubit(auth);
 
       await cubit.submit(email: 'admin@edifika.com', password: 'x');
 
+      expect(cubit.state.user, admin);
+      expect(cubit.state.error, isNull);
+      verifyNever(() => auth.signOut());
+    });
+
+    test('un usuario sin rol habilitado es rechazado y su sesión se cierra', () async {
+      when(() => auth.signIn(email: any(named: 'email'), password: any(named: 'password'), remember: any(named: 'remember')))
+          .thenAnswer((_) async => tenant.copyWith(roles: []));
+      when(() => auth.signOut()).thenAnswer((_) async {});
+      final cubit = LoginCubit(auth);
+
+      await cubit.submit(email: 'nadie@edifika.com', password: 'x');
+
       expect(cubit.state.user, isNull);
-      expect(cubit.state.error, contains('aplicación web'));
+      expect(cubit.state.error, contains('rol habilitado'));
       verify(() => auth.signOut()).called(1);
     });
 

@@ -19,6 +19,21 @@ abstract class AuthenticatedUser with _$AuthenticatedUser {
 
   factory AuthenticatedUser.fromJson(Map<String, dynamic> json) => _$AuthenticatedUserFromJson(json);
 
-  /// La app móvil es para residentes: propietarios (OWNER) o inquilinos (TENANT).
-  bool get isResident => roles.any((role) => const {'OWNER', 'TENANT'}.contains(role.toUpperCase()));
+  Set<String> get _normalizedRoles => roles.map(normalizeRole).toSet();
+
+  /// Propietario (OWNER) o inquilino (TENANT): usa las pantallas del residente.
+  bool get isResident => _normalizedRoles.any(const {'OWNER', 'TENANT'}.contains);
+
+  /// Administrador del edificio: en la app móvil solo ve la gestión IoT.
+  bool get isAdmin => _normalizedRoles.contains('ADMIN');
+
+  /// La app móvil admite residentes y administradores; cualquier otro rol
+  /// (o un usuario sin roles) no puede ingresar.
+  bool get canUseMobileApp => isAdmin || isResident;
+}
+
+/// `ROLE_admin` → `ADMIN` (Spring Security antepone `ROLE_` a los roles).
+String normalizeRole(String role) {
+  final upper = role.trim().toUpperCase();
+  return upper.startsWith('ROLE_') ? upper.substring(5) : upper;
 }

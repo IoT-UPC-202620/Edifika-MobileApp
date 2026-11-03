@@ -12,6 +12,7 @@ class ScreenScaffold extends StatelessWidget {
     this.location,
     this.showBack = true,
     this.onRefresh,
+    this.trailing,
   });
 
   final String title;
@@ -19,6 +20,9 @@ class ScreenScaffold extends StatelessWidget {
   final bool showBack;
   final Widget body;
   final Future<void> Function()? onRefresh;
+
+  /// Acción a la derecha del título (p. ej. el avatar de la cuenta).
+  final Widget? trailing;
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +48,7 @@ class ScreenScaffold extends StatelessWidget {
                       ),
                     if (showBack && Navigator.of(context).canPop()) const SizedBox(width: AppSpacing.sm),
                     Expanded(child: Semantics(header: true, child: Text(title, style: textTheme.headlineSmall))),
+                    ?trailing,
                   ],
                 ),
                 if (location != null) ...[
