@@ -13,6 +13,7 @@ import '../features/forum/presentation/post_detail_screen.dart';
 import '../features/home/presentation/home_screen.dart';
 import '../features/iot/presentation/iot_cards_screen.dart';
 import '../features/iot/presentation/iot_device_detail_screen.dart';
+import '../features/iot/presentation/iot_discovery_screens.dart';
 import '../features/iot/presentation/iot_management_screen.dart';
 import '../features/iot/presentation/iot_routes_args.dart';
 import '../features/notifications/presentation/notifications_screen.dart';
@@ -47,6 +48,17 @@ GoRouter createRouter(SessionCubit session) {
             path: 'device',
             redirect: (context, state) => state.extra is IotDeviceDetailArgs ? null : _adminHome,
             builder: (context, state) => IotDeviceDetailScreen(args: state.extra! as IotDeviceDetailArgs),
+          ),
+          GoRoute(
+            path: 'discovered',
+            redirect: (context, state) => state.extra is IotDiscoveredArgs ? null : _adminHome,
+            builder: (context, state) => IotDiscoveredScreen(args: state.extra! as IotDiscoveredArgs),
+          ),
+          // Hermana de `discovered`, no hija: cada página recibe sus propios argumentos.
+          GoRoute(
+            path: 'adopt',
+            redirect: (context, state) => state.extra is IotAdoptArgs ? null : _adminHome,
+            builder: (context, state) => IotAdoptScreen(args: state.extra! as IotAdoptArgs),
           ),
           GoRoute(
             path: 'cards',

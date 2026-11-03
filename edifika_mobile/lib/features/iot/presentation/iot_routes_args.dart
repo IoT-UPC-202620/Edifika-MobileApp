@@ -35,3 +35,27 @@ class IotCardsArgs {
     return null;
   }
 }
+
+/// Nodos descubiertos en un edificio, con sus gateways para mostrar sus nombres.
+class IotDiscoveredArgs {
+  const IotDiscoveredArgs({required this.buildingId, required this.buildingName, this.gateways = const []});
+
+  final int buildingId;
+  final String buildingName;
+  final List<IotGateway> gateways;
+
+  String? gatewayName(int gatewayId) {
+    for (final g in gateways) {
+      if (g.id == gatewayId) return g.name;
+    }
+    return null;
+  }
+}
+
+/// Nodo a adoptar y el nombre del gateway que lo identificó.
+class IotAdoptArgs {
+  const IotAdoptArgs({required this.discovered, required this.gatewayName});
+
+  final DiscoveredDevice discovered;
+  final String gatewayName;
+}
