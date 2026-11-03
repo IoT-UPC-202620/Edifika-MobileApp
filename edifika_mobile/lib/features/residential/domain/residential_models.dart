@@ -3,10 +3,16 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'residential_models.freezed.dart';
 part 'residential_models.g.dart';
 
+/// La fake API envía `id` (y también `idBuilding`); el microservicio
+/// Residential Management solo envía `idBuilding`, `idUnit` e `idUserUnit`.
+Object? _readBuildingId(Map<dynamic, dynamic> json, String key) => json['id'] ?? json['idBuilding'];
+Object? _readUnitId(Map<dynamic, dynamic> json, String key) => json['id'] ?? json['idUnit'];
+Object? _readUserUnitId(Map<dynamic, dynamic> json, String key) => json['id'] ?? json['idUserUnit'];
+
 @freezed
 abstract class Building with _$Building {
   const factory Building({
-    required int id,
+    @JsonKey(readValue: _readBuildingId) required int id,
     required String name,
     @Default('') String address,
     @Default('') String district,
@@ -19,7 +25,7 @@ abstract class Building with _$Building {
 @freezed
 abstract class Unit with _$Unit {
   const factory Unit({
-    required int id,
+    @JsonKey(readValue: _readUnitId) required int id,
     required int idBuilding,
     required int unitNumber,
     required int floor,
@@ -38,7 +44,7 @@ abstract class UserUnit with _$UserUnit {
   const UserUnit._();
 
   const factory UserUnit({
-    required int id,
+    @JsonKey(readValue: _readUserUnitId) required int id,
     required int idUnit,
     required int idUser,
     int? idBuilding,

@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Building {
 
- int get id; String get name; String get address; String get district; String get city;
+@JsonKey(readValue: _readBuildingId) int get id; String get name; String get address; String get district; String get city;
 /// Create a copy of Building
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $BuildingCopyWith<$Res>  {
   factory $BuildingCopyWith(Building value, $Res Function(Building) _then) = _$BuildingCopyWithImpl;
 @useResult
 $Res call({
- int id, String name, String address, String district, String city
+@JsonKey(readValue: _readBuildingId) int id, String name, String address, String district, String city
 });
 
 
@@ -157,7 +157,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String name,  String address,  String district,  String city)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(readValue: _readBuildingId)  int id,  String name,  String address,  String district,  String city)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Building() when $default != null:
 return $default(_that.id,_that.name,_that.address,_that.district,_that.city);case _:
@@ -178,7 +178,7 @@ return $default(_that.id,_that.name,_that.address,_that.district,_that.city);cas
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String name,  String address,  String district,  String city)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(readValue: _readBuildingId)  int id,  String name,  String address,  String district,  String city)  $default,) {final _that = this;
 switch (_that) {
 case _Building():
 return $default(_that.id,_that.name,_that.address,_that.district,_that.city);case _:
@@ -198,7 +198,7 @@ return $default(_that.id,_that.name,_that.address,_that.district,_that.city);cas
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String name,  String address,  String district,  String city)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(readValue: _readBuildingId)  int id,  String name,  String address,  String district,  String city)?  $default,) {final _that = this;
 switch (_that) {
 case _Building() when $default != null:
 return $default(_that.id,_that.name,_that.address,_that.district,_that.city);case _:
@@ -213,10 +213,10 @@ return $default(_that.id,_that.name,_that.address,_that.district,_that.city);cas
 @JsonSerializable()
 
 class _Building implements Building {
-  const _Building({required this.id, required this.name, this.address = '', this.district = '', this.city = ''});
+  const _Building({@JsonKey(readValue: _readBuildingId) required this.id, required this.name, this.address = '', this.district = '', this.city = ''});
   factory _Building.fromJson(Map<String, dynamic> json) => _$BuildingFromJson(json);
 
-@override final  int id;
+@override@JsonKey(readValue: _readBuildingId) final  int id;
 @override final  String name;
 @override@JsonKey() final  String address;
 @override@JsonKey() final  String district;
@@ -255,7 +255,7 @@ abstract mixin class _$BuildingCopyWith<$Res> implements $BuildingCopyWith<$Res>
   factory _$BuildingCopyWith(_Building value, $Res Function(_Building) _then) = __$BuildingCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String name, String address, String district, String city
+@JsonKey(readValue: _readBuildingId) int id, String name, String address, String district, String city
 });
 
 
@@ -290,7 +290,7 @@ as String,
 /// @nodoc
 mixin _$Unit {
 
- int get id; int get idBuilding; int get unitNumber; int get floor; double get coveredArea; double get totalArea; double get participationPercentage; String get status;
+@JsonKey(readValue: _readUnitId) int get id; int get idBuilding; int get unitNumber; int get floor; double get coveredArea; double get totalArea; double get participationPercentage; String get status;
 /// Create a copy of Unit
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -323,7 +323,7 @@ abstract mixin class $UnitCopyWith<$Res>  {
   factory $UnitCopyWith(Unit value, $Res Function(Unit) _then) = _$UnitCopyWithImpl;
 @useResult
 $Res call({
- int id, int idBuilding, int unitNumber, int floor, double coveredArea, double totalArea, double participationPercentage, String status
+@JsonKey(readValue: _readUnitId) int id, int idBuilding, int unitNumber, int floor, double coveredArea, double totalArea, double participationPercentage, String status
 });
 
 
@@ -435,7 +435,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  int idBuilding,  int unitNumber,  int floor,  double coveredArea,  double totalArea,  double participationPercentage,  String status)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(readValue: _readUnitId)  int id,  int idBuilding,  int unitNumber,  int floor,  double coveredArea,  double totalArea,  double participationPercentage,  String status)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Unit() when $default != null:
 return $default(_that.id,_that.idBuilding,_that.unitNumber,_that.floor,_that.coveredArea,_that.totalArea,_that.participationPercentage,_that.status);case _:
@@ -456,7 +456,7 @@ return $default(_that.id,_that.idBuilding,_that.unitNumber,_that.floor,_that.cov
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  int idBuilding,  int unitNumber,  int floor,  double coveredArea,  double totalArea,  double participationPercentage,  String status)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(readValue: _readUnitId)  int id,  int idBuilding,  int unitNumber,  int floor,  double coveredArea,  double totalArea,  double participationPercentage,  String status)  $default,) {final _that = this;
 switch (_that) {
 case _Unit():
 return $default(_that.id,_that.idBuilding,_that.unitNumber,_that.floor,_that.coveredArea,_that.totalArea,_that.participationPercentage,_that.status);case _:
@@ -476,7 +476,7 @@ return $default(_that.id,_that.idBuilding,_that.unitNumber,_that.floor,_that.cov
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  int idBuilding,  int unitNumber,  int floor,  double coveredArea,  double totalArea,  double participationPercentage,  String status)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(readValue: _readUnitId)  int id,  int idBuilding,  int unitNumber,  int floor,  double coveredArea,  double totalArea,  double participationPercentage,  String status)?  $default,) {final _that = this;
 switch (_that) {
 case _Unit() when $default != null:
 return $default(_that.id,_that.idBuilding,_that.unitNumber,_that.floor,_that.coveredArea,_that.totalArea,_that.participationPercentage,_that.status);case _:
@@ -491,10 +491,10 @@ return $default(_that.id,_that.idBuilding,_that.unitNumber,_that.floor,_that.cov
 @JsonSerializable()
 
 class _Unit implements Unit {
-  const _Unit({required this.id, required this.idBuilding, required this.unitNumber, required this.floor, this.coveredArea = 0, this.totalArea = 0, this.participationPercentage = 0, this.status = ''});
+  const _Unit({@JsonKey(readValue: _readUnitId) required this.id, required this.idBuilding, required this.unitNumber, required this.floor, this.coveredArea = 0, this.totalArea = 0, this.participationPercentage = 0, this.status = ''});
   factory _Unit.fromJson(Map<String, dynamic> json) => _$UnitFromJson(json);
 
-@override final  int id;
+@override@JsonKey(readValue: _readUnitId) final  int id;
 @override final  int idBuilding;
 @override final  int unitNumber;
 @override final  int floor;
@@ -536,7 +536,7 @@ abstract mixin class _$UnitCopyWith<$Res> implements $UnitCopyWith<$Res> {
   factory _$UnitCopyWith(_Unit value, $Res Function(_Unit) _then) = __$UnitCopyWithImpl;
 @override @useResult
 $Res call({
- int id, int idBuilding, int unitNumber, int floor, double coveredArea, double totalArea, double participationPercentage, String status
+@JsonKey(readValue: _readUnitId) int id, int idBuilding, int unitNumber, int floor, double coveredArea, double totalArea, double participationPercentage, String status
 });
 
 
@@ -574,7 +574,7 @@ as String,
 /// @nodoc
 mixin _$UserUnit {
 
- int get id; int get idUnit; int get idUser; int? get idBuilding; String? get startDate; String? get endDate; String get status;
+@JsonKey(readValue: _readUserUnitId) int get id; int get idUnit; int get idUser; int? get idBuilding; String? get startDate; String? get endDate; String get status;
 /// Create a copy of UserUnit
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -607,7 +607,7 @@ abstract mixin class $UserUnitCopyWith<$Res>  {
   factory $UserUnitCopyWith(UserUnit value, $Res Function(UserUnit) _then) = _$UserUnitCopyWithImpl;
 @useResult
 $Res call({
- int id, int idUnit, int idUser, int? idBuilding, String? startDate, String? endDate, String status
+@JsonKey(readValue: _readUserUnitId) int id, int idUnit, int idUser, int? idBuilding, String? startDate, String? endDate, String status
 });
 
 
@@ -718,7 +718,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  int idUnit,  int idUser,  int? idBuilding,  String? startDate,  String? endDate,  String status)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(readValue: _readUserUnitId)  int id,  int idUnit,  int idUser,  int? idBuilding,  String? startDate,  String? endDate,  String status)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserUnit() when $default != null:
 return $default(_that.id,_that.idUnit,_that.idUser,_that.idBuilding,_that.startDate,_that.endDate,_that.status);case _:
@@ -739,7 +739,7 @@ return $default(_that.id,_that.idUnit,_that.idUser,_that.idBuilding,_that.startD
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  int idUnit,  int idUser,  int? idBuilding,  String? startDate,  String? endDate,  String status)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(readValue: _readUserUnitId)  int id,  int idUnit,  int idUser,  int? idBuilding,  String? startDate,  String? endDate,  String status)  $default,) {final _that = this;
 switch (_that) {
 case _UserUnit():
 return $default(_that.id,_that.idUnit,_that.idUser,_that.idBuilding,_that.startDate,_that.endDate,_that.status);case _:
@@ -759,7 +759,7 @@ return $default(_that.id,_that.idUnit,_that.idUser,_that.idBuilding,_that.startD
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  int idUnit,  int idUser,  int? idBuilding,  String? startDate,  String? endDate,  String status)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(readValue: _readUserUnitId)  int id,  int idUnit,  int idUser,  int? idBuilding,  String? startDate,  String? endDate,  String status)?  $default,) {final _that = this;
 switch (_that) {
 case _UserUnit() when $default != null:
 return $default(_that.id,_that.idUnit,_that.idUser,_that.idBuilding,_that.startDate,_that.endDate,_that.status);case _:
@@ -774,10 +774,10 @@ return $default(_that.id,_that.idUnit,_that.idUser,_that.idBuilding,_that.startD
 @JsonSerializable()
 
 class _UserUnit extends UserUnit {
-  const _UserUnit({required this.id, required this.idUnit, required this.idUser, this.idBuilding, this.startDate, this.endDate, this.status = ''}): super._();
+  const _UserUnit({@JsonKey(readValue: _readUserUnitId) required this.id, required this.idUnit, required this.idUser, this.idBuilding, this.startDate, this.endDate, this.status = ''}): super._();
   factory _UserUnit.fromJson(Map<String, dynamic> json) => _$UserUnitFromJson(json);
 
-@override final  int id;
+@override@JsonKey(readValue: _readUserUnitId) final  int id;
 @override final  int idUnit;
 @override final  int idUser;
 @override final  int? idBuilding;
@@ -818,7 +818,7 @@ abstract mixin class _$UserUnitCopyWith<$Res> implements $UserUnitCopyWith<$Res>
   factory _$UserUnitCopyWith(_UserUnit value, $Res Function(_UserUnit) _then) = __$UserUnitCopyWithImpl;
 @override @useResult
 $Res call({
- int id, int idUnit, int idUser, int? idBuilding, String? startDate, String? endDate, String status
+@JsonKey(readValue: _readUserUnitId) int id, int idUnit, int idUser, int? idBuilding, String? startDate, String? endDate, String status
 });
 
 

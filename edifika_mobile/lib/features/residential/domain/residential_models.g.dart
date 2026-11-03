@@ -7,7 +7,7 @@ part of 'residential_models.dart';
 // **************************************************************************
 
 _Building _$BuildingFromJson(Map<String, dynamic> json) => _Building(
-  id: (json['id'] as num).toInt(),
+  id: (_readBuildingId(json, 'id') as num).toInt(),
   name: json['name'] as String,
   address: json['address'] as String? ?? '',
   district: json['district'] as String? ?? '',
@@ -23,7 +23,7 @@ Map<String, dynamic> _$BuildingToJson(_Building instance) => <String, dynamic>{
 };
 
 _Unit _$UnitFromJson(Map<String, dynamic> json) => _Unit(
-  id: (json['id'] as num).toInt(),
+  id: (_readUnitId(json, 'id') as num).toInt(),
   idBuilding: (json['idBuilding'] as num).toInt(),
   unitNumber: (json['unitNumber'] as num).toInt(),
   floor: (json['floor'] as num).toInt(),
@@ -46,7 +46,7 @@ Map<String, dynamic> _$UnitToJson(_Unit instance) => <String, dynamic>{
 };
 
 _UserUnit _$UserUnitFromJson(Map<String, dynamic> json) => _UserUnit(
-  id: (json['id'] as num).toInt(),
+  id: (_readUserUnitId(json, 'id') as num).toInt(),
   idUnit: (json['idUnit'] as num).toInt(),
   idUser: (json['idUser'] as num).toInt(),
   idBuilding: (json['idBuilding'] as num?)?.toInt(),
