@@ -53,7 +53,22 @@ Pantalla para supervisar los dispositivos IoT de un edificio y registrar sus tar
 | Dispositivos del edificio | `GET /iot/devices?buildingId=` | IoT Access Management |
 | Telemetría | `GET /telemetry/devices?buildingId=` | IoT Telemetry (si falla, se muestran los dispositivos sin lecturas) |
 
-El emparejamiento **edificio → gateway → dispositivo** se hace por ahora manualmente en el backend (`POST /iot/gateways`, `POST /iot/devices`). Abrir la puerta y el modo mantenimiento quedan para una próxima versión.
+El gateway del edificio se registra en el backend (`POST /iot/gateways`); los dispositivos se descubren y adoptan desde la app (ver abajo). Abrir la puerta y el modo mantenimiento quedan para una próxima versión.
+
+### Dispositivos nuevos (descubrimiento y adopción)
+
+Los nodos ESP32 ya no se registran a mano en el backend:
+
+1. Al encenderse, el nodo se anuncia en el broker. Su gateway lo identifica y aparece en **Gestión IoT** como "N dispositivos nuevos" (`/admin/iot/discovered`). Mientras tanto la pantalla del nodo muestra `Sin registrar` y un código de 4 dígitos, y el nodo no opera.
+2. En **Adoptar dispositivo** (`/admin/iot/adopt`) se comprueba que el código coincida con el de la pantalla. **Identificar** hace parpadear y sonar la placa; luego se completan nombre, ubicación, segundos de apertura y componentes (vienen marcados según lo que anunció el nodo).
+3. **Adoptar** crea el dispositivo en el gateway que lo identificó. En unos segundos el nodo recibe su configuración, deja de mostrar el código y queda En línea. **Ignorar** lo saca de la lista.
+
+| Acción | Endpoint (rol ADMIN) |
+|---|---|
+| Dispositivos nuevos del edificio | `GET /iot/discovered-devices?buildingId=` |
+| Identificar | `POST /iot/discovered-devices/{id}/identify` |
+| Adoptar | `POST /iot/discovered-devices/{id}/adopt` |
+| Ignorar | `POST /iot/discovered-devices/{id}/ignore` |
 
 ### Tarjetas RFID
 
