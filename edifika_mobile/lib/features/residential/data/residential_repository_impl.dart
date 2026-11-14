@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 
 import '../../../core/config/api_endpoints.dart';
 import '../../../core/network/api_client.dart';
+import '../domain/my_residence.dart';
 import '../domain/residential_models.dart';
 import '../domain/residential_repository.dart';
 
@@ -34,13 +35,9 @@ class ResidentialRepositoryImpl implements ResidentialRepository {
         return parseList(response.data, UserUnit.fromJson);
       });
 
-  /// Usa la misma ruta que `UserUnitsService.getResidentsByBuildingId` del web.
   @override
-  Future<UserUnit?> getActiveUserUnit({required int buildingId, required int userId}) async {
-    final relations = await getBuildingResidents(buildingId);
-    for (final relation in relations) {
-      if (relation.idUser == userId && relation.isActive) return relation;
-    }
-    return null;
-  }
+  Future<MyResidence> getMyResidence() => guardApiCall(() async {
+        final response = await _dio.get<Map<String, dynamic>>(ApiEndpoints.residentsMe);
+        return MyResidence.fromJson(response.data!);
+      });
 }

@@ -19,9 +19,13 @@ void main() {
 
   FakeHttpAdapter fakeApi() => FakeHttpAdapter({
         'GET /api/v1/residential/buildings/1': const FakeRoute(200, {'id': 1, 'name': 'Edificio Los Olivos'}),
-        'GET /api/v1/residential/buildings/1/residents': const FakeRoute(200, [
-          {'id': 1, 'idUnit': 2, 'idUser': 2, 'status': 'ACTIVE'},
-        ]),
+        'GET /api/v1/residential/residents/me': const FakeRoute(200, {
+          'buildingId': 1,
+          'buildingName': 'Edificio Los Olivos',
+          'unitId': 2,
+          'unitNumber': 102,
+          'relationType': 'OWNER',
+        }),
         'GET /api/v1/residential/units/2': const FakeRoute(200, {'id': 2, 'idBuilding': 1, 'unitNumber': 102, 'floor': 1}),
         'GET /api/v1/payments/debts/unit/2': const FakeRoute(200, [
           {'id': 1, 'unitId': 2, 'description': 'Maintenance fee October', 'amount': 850, 'currency': 'PEN', 'dueDate': '2026-06-30', 'status': 'PENDING'},

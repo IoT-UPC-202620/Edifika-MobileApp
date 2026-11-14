@@ -75,22 +75,29 @@ void main() {
   });
 
   group('ResidentialRepository', () {
-    test('encuentra la unidad activa del residente vía /buildings/:id/residents', () async {
-      adapter.routes['GET /api/v1/residential/buildings/1/residents'] = const FakeRoute(200, [
-        {'id': 9, 'idUnit': 1, 'idUser': 2, 'status': 'INACTIVE'},
-        {'id': 1, 'idUserUnit': 1, 'idBuilding': 1, 'idUnit': 2, 'idUser': 2, 'startDate': '2026-01-10T08:00:00', 'endDate': null, 'status': 'ACTIVE'},
-        {'id': 2, 'idUnit': 3, 'idUser': 3, 'status': 'ACTIVE'},
-      ]);
+    test('obtiene la unidad activa del residente vía /residential/residents/me', () async {
+      adapter.routes['GET /api/v1/residential/residents/me'] = const FakeRoute(200, {
+        'buildingId': 1,
+        'buildingName': 'Residencial Los Olivos',
+        'unitId': 2,
+        'unitNumber': 102,
+        'relationType': 'TENANT',
+      });
 
-      final relation = await ResidentialRepositoryImpl(dio).getActiveUserUnit(buildingId: 1, userId: 2);
+      final me = await ResidentialRepositoryImpl(dio).getMyResidence();
 
-      expect(relation?.idUnit, 2);
+      expect(me.buildingId, 1);
+      expect(me.unitId, 2);
+      expect(me.relationType, 'TENANT');
     });
 
-    test('devuelve null si el residente no tiene unidad activa', () async {
-      adapter.routes['GET /api/v1/residential/buildings/1/residents'] = const FakeRoute(200, []);
+    test('404 si el residente no tiene unidad asignada', () async {
+      adapter.routes['GET /api/v1/residential/residents/me'] = const FakeRoute(404, {'message': 'El usuario no tiene una unidad asignada'});
 
-      expect(await ResidentialRepositoryImpl(dio).getActiveUserUnit(buildingId: 1, userId: 2), isNull);
+      await expectLater(
+        ResidentialRepositoryImpl(dio).getMyResidence(),
+        throwsA(isA<ApiException>().having((e) => e.statusCode, 'statusCode', 404)),
+      );
     });
   });
 

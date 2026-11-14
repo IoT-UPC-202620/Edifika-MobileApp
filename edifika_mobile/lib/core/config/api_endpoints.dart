@@ -14,6 +14,8 @@ class ApiEndpoints {
   static const String buildings = '/residential/buildings';
   static const String units = '/residential/units';
   static const String userUnits = '/residential/user-units';
+  /// Unidad activa del usuario del token (OWNER/TENANT); 404 si no tiene.
+  static const String residentsMe = '/residential/residents/me';
 
   static const String reservations = '/reservations';
   static const String commonAreas = '/common-areas';
