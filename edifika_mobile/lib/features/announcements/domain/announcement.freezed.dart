@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Announcement {
 
-@JsonKey(name: 'id_announcement') int get id;@JsonKey(name: 'id_building') int get buildingId; String get title; String get description; String get message; String get priority;@JsonKey(name: 'created_at') String? get createdAt;
+@JsonKey(readValue: _readId) int get id;@JsonKey(readValue: _readBuildingId) int get buildingId; String get title; String get description; String get message; String get priority;@JsonKey(readValue: _readCreatedAt) String? get createdAt;
 /// Create a copy of Announcement
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $AnnouncementCopyWith<$Res>  {
   factory $AnnouncementCopyWith(Announcement value, $Res Function(Announcement) _then) = _$AnnouncementCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'id_announcement') int id,@JsonKey(name: 'id_building') int buildingId, String title, String description, String message, String priority,@JsonKey(name: 'created_at') String? createdAt
+@JsonKey(readValue: _readId) int id,@JsonKey(readValue: _readBuildingId) int buildingId, String title, String description, String message, String priority,@JsonKey(readValue: _readCreatedAt) String? createdAt
 });
 
 
@@ -159,7 +159,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'id_announcement')  int id, @JsonKey(name: 'id_building')  int buildingId,  String title,  String description,  String message,  String priority, @JsonKey(name: 'created_at')  String? createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(readValue: _readId)  int id, @JsonKey(readValue: _readBuildingId)  int buildingId,  String title,  String description,  String message,  String priority, @JsonKey(readValue: _readCreatedAt)  String? createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Announcement() when $default != null:
 return $default(_that.id,_that.buildingId,_that.title,_that.description,_that.message,_that.priority,_that.createdAt);case _:
@@ -180,7 +180,7 @@ return $default(_that.id,_that.buildingId,_that.title,_that.description,_that.me
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'id_announcement')  int id, @JsonKey(name: 'id_building')  int buildingId,  String title,  String description,  String message,  String priority, @JsonKey(name: 'created_at')  String? createdAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(readValue: _readId)  int id, @JsonKey(readValue: _readBuildingId)  int buildingId,  String title,  String description,  String message,  String priority, @JsonKey(readValue: _readCreatedAt)  String? createdAt)  $default,) {final _that = this;
 switch (_that) {
 case _Announcement():
 return $default(_that.id,_that.buildingId,_that.title,_that.description,_that.message,_that.priority,_that.createdAt);case _:
@@ -200,7 +200,7 @@ return $default(_that.id,_that.buildingId,_that.title,_that.description,_that.me
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'id_announcement')  int id, @JsonKey(name: 'id_building')  int buildingId,  String title,  String description,  String message,  String priority, @JsonKey(name: 'created_at')  String? createdAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(readValue: _readId)  int id, @JsonKey(readValue: _readBuildingId)  int buildingId,  String title,  String description,  String message,  String priority, @JsonKey(readValue: _readCreatedAt)  String? createdAt)?  $default,) {final _that = this;
 switch (_that) {
 case _Announcement() when $default != null:
 return $default(_that.id,_that.buildingId,_that.title,_that.description,_that.message,_that.priority,_that.createdAt);case _:
@@ -215,16 +215,16 @@ return $default(_that.id,_that.buildingId,_that.title,_that.description,_that.me
 @JsonSerializable()
 
 class _Announcement implements Announcement {
-  const _Announcement({@JsonKey(name: 'id_announcement') required this.id, @JsonKey(name: 'id_building') required this.buildingId, required this.title, this.description = '', this.message = '', this.priority = '', @JsonKey(name: 'created_at') this.createdAt});
+  const _Announcement({@JsonKey(readValue: _readId) required this.id, @JsonKey(readValue: _readBuildingId) required this.buildingId, required this.title, this.description = '', this.message = '', this.priority = '', @JsonKey(readValue: _readCreatedAt) this.createdAt});
   factory _Announcement.fromJson(Map<String, dynamic> json) => _$AnnouncementFromJson(json);
 
-@override@JsonKey(name: 'id_announcement') final  int id;
-@override@JsonKey(name: 'id_building') final  int buildingId;
+@override@JsonKey(readValue: _readId) final  int id;
+@override@JsonKey(readValue: _readBuildingId) final  int buildingId;
 @override final  String title;
 @override@JsonKey() final  String description;
 @override@JsonKey() final  String message;
 @override@JsonKey() final  String priority;
-@override@JsonKey(name: 'created_at') final  String? createdAt;
+@override@JsonKey(readValue: _readCreatedAt) final  String? createdAt;
 
 /// Create a copy of Announcement
 /// with the given fields replaced by the non-null parameter values.
@@ -259,7 +259,7 @@ abstract mixin class _$AnnouncementCopyWith<$Res> implements $AnnouncementCopyWi
   factory _$AnnouncementCopyWith(_Announcement value, $Res Function(_Announcement) _then) = __$AnnouncementCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'id_announcement') int id,@JsonKey(name: 'id_building') int buildingId, String title, String description, String message, String priority,@JsonKey(name: 'created_at') String? createdAt
+@JsonKey(readValue: _readId) int id,@JsonKey(readValue: _readBuildingId) int buildingId, String title, String description, String message, String priority,@JsonKey(readValue: _readCreatedAt) String? createdAt
 });
 
 

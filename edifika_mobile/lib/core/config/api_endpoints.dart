@@ -27,7 +27,8 @@ class ApiEndpoints {
   static const String posts = '/posts';
 
   static const String announcements = '/announcements';
-  static const String announcementReads = '/announcement-reads';
+  /// `POST /announcements/{id}/read` con `{userId}`.
+  static String announcementRead(int announcementId) => '$announcements/$announcementId/read';
 
   static const String notifications = '/notifications';
   static const String deviceTokens = '/device-tokens';

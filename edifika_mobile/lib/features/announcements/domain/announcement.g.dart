@@ -8,24 +8,24 @@ part of 'announcement.dart';
 
 _Announcement _$AnnouncementFromJson(Map<String, dynamic> json) =>
     _Announcement(
-      id: (json['id_announcement'] as num).toInt(),
-      buildingId: (json['id_building'] as num).toInt(),
+      id: (_readId(json, 'id') as num).toInt(),
+      buildingId: (_readBuildingId(json, 'buildingId') as num).toInt(),
       title: json['title'] as String,
       description: json['description'] as String? ?? '',
       message: json['message'] as String? ?? '',
       priority: json['priority'] as String? ?? '',
-      createdAt: json['created_at'] as String?,
+      createdAt: _readCreatedAt(json, 'createdAt') as String?,
     );
 
 Map<String, dynamic> _$AnnouncementToJson(_Announcement instance) =>
     <String, dynamic>{
-      'id_announcement': instance.id,
-      'id_building': instance.buildingId,
+      'id': instance.id,
+      'buildingId': instance.buildingId,
       'title': instance.title,
       'description': instance.description,
       'message': instance.message,
       'priority': instance.priority,
-      'created_at': instance.createdAt,
+      'createdAt': instance.createdAt,
     };
 
 _AnnouncementRead _$AnnouncementReadFromJson(Map<String, dynamic> json) =>

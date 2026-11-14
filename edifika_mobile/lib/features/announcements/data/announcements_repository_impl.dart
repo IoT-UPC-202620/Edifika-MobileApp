@@ -23,22 +23,8 @@ class AnnouncementsRepositoryImpl implements AnnouncementsRepository {
       });
 
   @override
-  Future<List<AnnouncementRead>> getReadsByUser(int userId) => guardApiCall(() async {
-        final response = await _dio.get<Object>(
-          ApiEndpoints.announcementReads,
-          queryParameters: {'id_user': userId},
-        );
-        return parseList(response.data, AnnouncementRead.fromJson);
-      });
-
-  @override
-  Future<AnnouncementRead> confirmRead({required int announcementId, required int userId}) =>
-      guardApiCall(() async {
-        final response = await _dio.post<Map<String, dynamic>>(
-          ApiEndpoints.announcementReads,
-          data: {'id_announcement': announcementId, 'id_user': userId},
-        );
+  Future<void> confirmRead({required int announcementId, required int userId}) => guardApiCall(() async {
+        await _dio.post<Object>(ApiEndpoints.announcementRead(announcementId), data: {'userId': userId});
         _changes?.notify();
-        return AnnouncementRead.fromJson(response.data!);
       });
 }

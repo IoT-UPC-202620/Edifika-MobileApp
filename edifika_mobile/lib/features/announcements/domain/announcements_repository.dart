@@ -1,11 +1,10 @@
 import 'announcement.dart';
 
-/// PENDIENTE DE INTEGRACIÓN: la fake API aún no expone estas rutas, así que
-/// hoy las llamadas terminan en `ApiException` (404).
+/// Anuncios del edificio (Communications). El backend no expone la lista de
+/// lecturas por usuario: el estado "leído" solo se conoce tras confirmar.
 abstract class AnnouncementsRepository {
   Future<List<Announcement>> getByBuilding(int buildingId);
 
-  Future<List<AnnouncementRead>> getReadsByUser(int userId);
-
-  Future<AnnouncementRead> confirmRead({required int announcementId, required int userId});
+  /// `POST /announcements/{id}/read` con `{userId}`. Si ya estaba leído el backend responde error.
+  Future<void> confirmRead({required int announcementId, required int userId});
 }
