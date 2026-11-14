@@ -13,6 +13,7 @@ import '../../auth/presentation/residence_gate.dart';
 import '../../residential/domain/residence.dart';
 import '../domain/payment_models.dart';
 import 'account_cubits.dart';
+import 'pay_debt_screen.dart';
 
 /// Mockup 03 · Mis deudas (pestaña Cuenta).
 class DebtsScreen extends StatelessWidget {
@@ -23,16 +24,19 @@ class DebtsScreen extends StatelessWidget {
     return ResidenceGate(
       builder: (context, user, residence) => BlocProvider(
         create: (context) => DebtsCubit(context.read())..load(residence.unit?.id),
-        child: _DebtsView(residence: residence),
+        child: _DebtsView(residence: residence, canPay: user.isOwner),
       ),
     );
   }
 }
 
 class _DebtsView extends StatelessWidget {
-  const _DebtsView({required this.residence});
+  const _DebtsView({required this.residence, required this.canPay});
 
   final Residence residence;
+
+  /// Solo el propietario paga (el inquilino no tiene pestaña Cuenta).
+  final bool canPay;
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +81,15 @@ class _DebtsView extends StatelessWidget {
                     const EmptyView(message: 'No tienes deudas pendientes.', icon: Icons.verified_outlined)
                   else
                     for (final debt in state.debts) ...[
-                      _DebtCard(debt: debt),
+                      _DebtCard(
+                        debt: debt,
+                        onPay: canPay
+                            ? () async {
+                                final paid = await context.push<bool>('/account/pay', extra: PayDebtArgs(debt: debt));
+                                if (paid == true) await cubit.load(residence.unit?.id);
+                              }
+                            : null,
+                      ),
                       const SizedBox(height: AppSpacing.md),
                     ],
                   const SizedBox(height: AppSpacing.md),
@@ -96,9 +108,10 @@ class _DebtsView extends StatelessWidget {
 }
 
 class _DebtCard extends StatelessWidget {
-  const _DebtCard({required this.debt});
+  const _DebtCard({required this.debt, this.onPay});
 
   final Debt debt;
+  final VoidCallback? onPay;
 
   @override
   Widget build(BuildContext context) {
@@ -136,6 +149,14 @@ class _DebtCard extends StatelessWidget {
             overdue ? 'La fecha de vencimiento ya pasó.' : 'Aún dentro del plazo de pago.',
             style: textTheme.bodySmall?.copyWith(color: overdue ? AppColors.error : null),
           ),
+          if (onPay != null) ...[
+            const SizedBox(height: AppSpacing.md),
+            FilledButton.icon(
+              onPressed: onPay,
+              icon: const Icon(Icons.credit_card),
+              label: Text('Pagar ${Formatters.money(debt.amount, 'PEN')}'),
+            ),
+          ],
         ],
       ),
     );

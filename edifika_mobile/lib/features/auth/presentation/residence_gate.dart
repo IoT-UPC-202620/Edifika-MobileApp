@@ -29,9 +29,20 @@ class ResidenceGate extends StatelessWidget {
               padding: const EdgeInsets.all(AppSpacing.screen),
               child: state.residenceError != null
                   ? Center(
-                      child: ErrorView(
-                        message: state.residenceError!,
-                        onRetry: () => context.read<SessionCubit>().loadResidence(),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ErrorView(
+                            message: state.residenceError!,
+                            onRetry: () => context.read<SessionCubit>().loadResidence(),
+                          ),
+                          const SizedBox(height: AppSpacing.lg),
+                          OutlinedButton.icon(
+                            onPressed: () => context.read<SessionCubit>().signOut(),
+                            icon: const Icon(Icons.logout),
+                            label: const Text('Cerrar sesión'),
+                          ),
+                        ],
                       ),
                     )
                   : const LoadingView(message: 'Cargando tu edificio…'),

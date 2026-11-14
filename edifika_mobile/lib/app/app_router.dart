@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../core/widgets/feedback_views.dart';
+import '../features/access/presentation/my_access_screen.dart';
+import '../features/admin/presentation/admin_home_screen.dart';
 import '../features/announcements/presentation/announcements_screen.dart';
 import '../features/auth/presentation/login_screen.dart';
 import '../features/auth/presentation/session_cubit.dart';
@@ -18,6 +20,7 @@ import '../features/iot/presentation/iot_management_screen.dart';
 import '../features/iot/presentation/iot_routes_args.dart';
 import '../features/notifications/presentation/notifications_screen.dart';
 import '../features/payments/presentation/debts_screen.dart';
+import '../features/payments/presentation/pay_debt_screen.dart';
 import '../features/payments/presentation/payments_screen.dart';
 import '../features/reservations/presentation/new_reservation_screen.dart';
 import '../features/reservations/presentation/reservation_detail_screen.dart';
@@ -33,42 +36,50 @@ GoRouter createRouter(SessionCubit session) {
       return switch (session.state.status) {
         SessionStatus.unknown => location == '/splash' ? null : '/splash',
         SessionStatus.unauthenticated => location == '/login' ? null : '/login',
-        SessionStatus.authenticated => _authenticatedRedirect(location, isAdmin: session.state.user?.isAdmin ?? false),
+        SessionStatus.authenticated => _authenticatedRedirect(
+            location,
+            isAdmin: session.state.user?.isAdmin ?? false,
+            isTenantOnly: session.state.user?.isTenantOnly ?? false,
+          ),
       };
     },
     routes: [
       GoRoute(path: '/splash', builder: (context, state) => const Scaffold(body: Center(child: LoadingView()))),
       GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
-      // Navegación del administrador: solo la gestión IoT, sin la barra de residente.
+      // Navegación del administrador: inicio con resumen y, desde ahí, la gestión IoT.
+      GoRoute(path: _adminHome, builder: (context, state) => const AdminHomeScreen()),
       GoRoute(
-        path: _adminHome,
+        path: _adminIot,
         builder: (context, state) => const IotManagementScreen(),
         routes: [
           GoRoute(
             path: 'device',
-            redirect: (context, state) => state.extra is IotDeviceDetailArgs ? null : _adminHome,
+            redirect: (context, state) => state.extra is IotDeviceDetailArgs ? null : _adminIot,
             builder: (context, state) => IotDeviceDetailScreen(args: state.extra! as IotDeviceDetailArgs),
           ),
           GoRoute(
             path: 'discovered',
-            redirect: (context, state) => state.extra is IotDiscoveredArgs ? null : _adminHome,
+            redirect: (context, state) => state.extra is IotDiscoveredArgs ? null : _adminIot,
             builder: (context, state) => IotDiscoveredScreen(args: state.extra! as IotDiscoveredArgs),
           ),
           // Hermana de `discovered`, no hija: cada página recibe sus propios argumentos.
           GoRoute(
             path: 'adopt',
-            redirect: (context, state) => state.extra is IotAdoptArgs ? null : _adminHome,
+            redirect: (context, state) => state.extra is IotAdoptArgs ? null : _adminIot,
             builder: (context, state) => IotAdoptScreen(args: state.extra! as IotAdoptArgs),
           ),
           GoRoute(
             path: 'cards',
-            redirect: (context, state) => state.extra is IotCardsArgs ? null : _adminHome,
+            redirect: (context, state) => state.extra is IotCardsArgs ? null : _adminIot,
             builder: (context, state) => IotCardsScreen(args: state.extra! as IotCardsArgs),
           ),
         ],
       ),
       StatefulShellRoute.indexedStack(
-        builder: (context, state, shell) => _ResidentShell(shell: shell),
+        builder: (context, state, shell) => _ResidentShell(
+          shell: shell,
+          isTenantOnly: session.state.user?.isTenantOnly ?? false,
+        ),
         branches: [
           StatefulShellBranch(routes: [
             GoRoute(
@@ -81,7 +92,14 @@ GoRouter createRouter(SessionCubit session) {
             GoRoute(
               path: '/account',
               builder: (context, state) => const DebtsScreen(),
-              routes: [GoRoute(path: 'payments', builder: (context, state) => const PaymentsScreen())],
+              routes: [
+                GoRoute(path: 'payments', builder: (context, state) => const PaymentsScreen()),
+                GoRoute(
+                  path: 'pay',
+                  redirect: (context, state) => state.extra is PayDebtArgs ? null : '/account',
+                  builder: (context, state) => PayDebtScreen(args: state.extra! as PayDebtArgs),
+                ),
+              ],
             ),
           ]),
           StatefulShellBranch(routes: [
@@ -105,6 +123,10 @@ GoRouter createRouter(SessionCubit session) {
           StatefulShellBranch(routes: [
             GoRoute(path: '/announcements', builder: (context, state) => const AnnouncementsScreen()),
           ]),
+          // Rama 4: Mis accesos (OWNER y TENANT)
+          StatefulShellBranch(routes: [
+            GoRoute(path: '/access', builder: (context, state) => const MyAccessScreen()),
+          ]),
           StatefulShellBranch(routes: [
             GoRoute(
               path: '/community',
@@ -125,48 +147,73 @@ GoRouter createRouter(SessionCubit session) {
   );
 }
 
-const _adminHome = '/admin/iot';
+const _adminHome = '/admin';
+const _adminIot = '/admin/iot';
 
 /// Cada rol queda dentro de su propia navegación: el administrador en
-/// `/admin/...` y el residente en sus pestañas.
-String? _authenticatedRedirect(String location, {required bool isAdmin}) {
+/// `/admin/...` y el residente en sus pestañas. El inquilino no tiene "Cuenta".
+String? _authenticatedRedirect(String location, {required bool isAdmin, required bool isTenantOnly}) {
   final home = isAdmin ? _adminHome : '/home';
   if (location == '/login' || location == '/splash') return home;
   final inAdminArea = location.startsWith('/admin');
   if (isAdmin != inAdminArea) return home;
+  if (isTenantOnly && location.startsWith('/account')) return home;
   return null;
 }
 
-/// Barra inferior de 5 pestañas, visible en todas las pantallas del residente.
+/// Pestaña visible -> rama del shell. Ramas: 0 Inicio, 1 Cuenta, 2 Reservas,
+/// 3 Anuncios, 4 Mis accesos, 5 Comunidad.
+class _Tab {
+  const _Tab(this.branch, this.icon, this.selectedIcon, this.label);
+
+  final int branch;
+  final IconData icon;
+  final IconData selectedIcon;
+  final String label;
+}
+
+const _home = _Tab(0, Icons.home_outlined, Icons.home, 'Inicio');
+const _account = _Tab(1, Icons.account_balance_wallet_outlined, Icons.account_balance_wallet, 'Cuenta');
+const _reservations = _Tab(2, Icons.calendar_month_outlined, Icons.calendar_month, 'Reservas');
+const _announcements = _Tab(3, Icons.campaign_outlined, Icons.campaign, 'Anuncios');
+const _access = _Tab(4, Icons.key_outlined, Icons.key, 'Accesos');
+const _community = _Tab(5, Icons.forum_outlined, Icons.forum, 'Comunidad');
+
+/// OWNER: Inicio, Cuenta, Reservas, Anuncios, Comunidad, Mis accesos.
+const _ownerTabs = [_home, _account, _reservations, _announcements, _community, _access];
+
+/// TENANT: Inicio, Reservas, Anuncios, Comunidad, Mis accesos (sin Cuenta).
+const _tenantTabs = [_home, _reservations, _announcements, _community, _access];
+
+/// Barra inferior del residente; las pestañas dependen del rol.
 class _ResidentShell extends StatelessWidget {
-  const _ResidentShell({required this.shell});
+  const _ResidentShell({required this.shell, required this.isTenantOnly});
 
   final StatefulNavigationShell shell;
+  final bool isTenantOnly;
 
   @override
   Widget build(BuildContext context) {
+    final tabs = isTenantOnly ? _tenantTabs : _ownerTabs;
+    final selected = tabs.indexWhere((t) => t.branch == shell.currentIndex);
     return Scaffold(
       body: shell,
       bottomNavigationBar: DecoratedBox(
         decoration: BoxDecoration(border: Border(top: BorderSide(color: Theme.of(context).colorScheme.outline))),
         child: NavigationBar(
-          selectedIndex: shell.currentIndex,
+          selectedIndex: selected < 0 ? 0 : selected,
+          // Con 6 pestañas solo se rotula la seleccionada para que entren en pantalla.
+          labelBehavior: tabs.length > 5
+              ? NavigationDestinationLabelBehavior.onlyShowSelected
+              : NavigationDestinationLabelBehavior.alwaysShow,
           // Tocar la pestaña activa vuelve a su pantalla inicial.
-          onDestinationSelected: (index) => shell.goBranch(index, initialLocation: index == shell.currentIndex),
-          destinations: const [
-            NavigationDestination(icon: Icon(Icons.home_outlined), selectedIcon: Icon(Icons.home), label: 'Inicio'),
-            NavigationDestination(
-              icon: Icon(Icons.account_balance_wallet_outlined),
-              selectedIcon: Icon(Icons.account_balance_wallet),
-              label: 'Cuenta',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.calendar_month_outlined),
-              selectedIcon: Icon(Icons.calendar_month),
-              label: 'Reservas',
-            ),
-            NavigationDestination(icon: Icon(Icons.campaign_outlined), selectedIcon: Icon(Icons.campaign), label: 'Anuncios'),
-            NavigationDestination(icon: Icon(Icons.forum_outlined), selectedIcon: Icon(Icons.forum), label: 'Comunidad'),
+          onDestinationSelected: (index) {
+            final branch = tabs[index].branch;
+            shell.goBranch(branch, initialLocation: branch == shell.currentIndex);
+          },
+          destinations: [
+            for (final tab in tabs)
+              NavigationDestination(icon: Icon(tab.icon), selectedIcon: Icon(tab.selectedIcon), label: tab.label),
           ],
         ),
       ),

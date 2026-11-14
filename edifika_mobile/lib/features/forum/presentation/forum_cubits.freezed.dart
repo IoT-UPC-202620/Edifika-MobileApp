@@ -14,7 +14,8 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ForumState {
 
- LoadStatus get status; String? get error; List<Post> get posts; Map<int, String> get authorNames; String get query;
+ LoadStatus get status; String? get error; List<Post> get posts; Map<int, String> get authorNames;/// Roles actuales de cada usuario: respaldo para posts sin authorRole.
+ Map<int, List<String>> get authorRoles; String get query;
 /// Create a copy of ForumState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +26,16 @@ $ForumStateCopyWith<ForumState> get copyWith => _$ForumStateCopyWithImpl<ForumSt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ForumState&&(identical(other.status, status) || other.status == status)&&(identical(other.error, error) || other.error == error)&&const DeepCollectionEquality().equals(other.posts, posts)&&const DeepCollectionEquality().equals(other.authorNames, authorNames)&&(identical(other.query, query) || other.query == query));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ForumState&&(identical(other.status, status) || other.status == status)&&(identical(other.error, error) || other.error == error)&&const DeepCollectionEquality().equals(other.posts, posts)&&const DeepCollectionEquality().equals(other.authorNames, authorNames)&&const DeepCollectionEquality().equals(other.authorRoles, authorRoles)&&(identical(other.query, query) || other.query == query));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,error,const DeepCollectionEquality().hash(posts),const DeepCollectionEquality().hash(authorNames),query);
+int get hashCode => Object.hash(runtimeType,status,error,const DeepCollectionEquality().hash(posts),const DeepCollectionEquality().hash(authorNames),const DeepCollectionEquality().hash(authorRoles),query);
 
 @override
 String toString() {
-  return 'ForumState(status: $status, error: $error, posts: $posts, authorNames: $authorNames, query: $query)';
+  return 'ForumState(status: $status, error: $error, posts: $posts, authorNames: $authorNames, authorRoles: $authorRoles, query: $query)';
 }
 
 
@@ -45,7 +46,7 @@ abstract mixin class $ForumStateCopyWith<$Res>  {
   factory $ForumStateCopyWith(ForumState value, $Res Function(ForumState) _then) = _$ForumStateCopyWithImpl;
 @useResult
 $Res call({
- LoadStatus status, String? error, List<Post> posts, Map<int, String> authorNames, String query
+ LoadStatus status, String? error, List<Post> posts, Map<int, String> authorNames, Map<int, List<String>> authorRoles, String query
 });
 
 
@@ -62,13 +63,14 @@ class _$ForumStateCopyWithImpl<$Res>
 
 /// Create a copy of ForumState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? error = freezed,Object? posts = null,Object? authorNames = null,Object? query = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? error = freezed,Object? posts = null,Object? authorNames = null,Object? authorRoles = null,Object? query = null,}) {
   return _then(_self.copyWith(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as LoadStatus,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,posts: null == posts ? _self.posts : posts // ignore: cast_nullable_to_non_nullable
 as List<Post>,authorNames: null == authorNames ? _self.authorNames : authorNames // ignore: cast_nullable_to_non_nullable
-as Map<int, String>,query: null == query ? _self.query : query // ignore: cast_nullable_to_non_nullable
+as Map<int, String>,authorRoles: null == authorRoles ? _self.authorRoles : authorRoles // ignore: cast_nullable_to_non_nullable
+as Map<int, List<String>>,query: null == query ? _self.query : query // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
@@ -154,10 +156,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( LoadStatus status,  String? error,  List<Post> posts,  Map<int, String> authorNames,  String query)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( LoadStatus status,  String? error,  List<Post> posts,  Map<int, String> authorNames,  Map<int, List<String>> authorRoles,  String query)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ForumState() when $default != null:
-return $default(_that.status,_that.error,_that.posts,_that.authorNames,_that.query);case _:
+return $default(_that.status,_that.error,_that.posts,_that.authorNames,_that.authorRoles,_that.query);case _:
   return orElse();
 
 }
@@ -175,10 +177,10 @@ return $default(_that.status,_that.error,_that.posts,_that.authorNames,_that.que
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( LoadStatus status,  String? error,  List<Post> posts,  Map<int, String> authorNames,  String query)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( LoadStatus status,  String? error,  List<Post> posts,  Map<int, String> authorNames,  Map<int, List<String>> authorRoles,  String query)  $default,) {final _that = this;
 switch (_that) {
 case _ForumState():
-return $default(_that.status,_that.error,_that.posts,_that.authorNames,_that.query);case _:
+return $default(_that.status,_that.error,_that.posts,_that.authorNames,_that.authorRoles,_that.query);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -195,10 +197,10 @@ return $default(_that.status,_that.error,_that.posts,_that.authorNames,_that.que
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( LoadStatus status,  String? error,  List<Post> posts,  Map<int, String> authorNames,  String query)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( LoadStatus status,  String? error,  List<Post> posts,  Map<int, String> authorNames,  Map<int, List<String>> authorRoles,  String query)?  $default,) {final _that = this;
 switch (_that) {
 case _ForumState() when $default != null:
-return $default(_that.status,_that.error,_that.posts,_that.authorNames,_that.query);case _:
+return $default(_that.status,_that.error,_that.posts,_that.authorNames,_that.authorRoles,_that.query);case _:
   return null;
 
 }
@@ -210,7 +212,7 @@ return $default(_that.status,_that.error,_that.posts,_that.authorNames,_that.que
 
 
 class _ForumState extends ForumState {
-  const _ForumState({this.status = LoadStatus.loading, this.error, final  List<Post> posts = const <Post>[], final  Map<int, String> authorNames = const <int, String>{}, this.query = ''}): _posts = posts,_authorNames = authorNames,super._();
+  const _ForumState({this.status = LoadStatus.loading, this.error, final  List<Post> posts = const <Post>[], final  Map<int, String> authorNames = const <int, String>{}, final  Map<int, List<String>> authorRoles = const <int, List<String>>{}, this.query = ''}): _posts = posts,_authorNames = authorNames,_authorRoles = authorRoles,super._();
   
 
 @override@JsonKey() final  LoadStatus status;
@@ -229,6 +231,15 @@ class _ForumState extends ForumState {
   return EqualUnmodifiableMapView(_authorNames);
 }
 
+/// Roles actuales de cada usuario: respaldo para posts sin authorRole.
+ final  Map<int, List<String>> _authorRoles;
+/// Roles actuales de cada usuario: respaldo para posts sin authorRole.
+@override@JsonKey() Map<int, List<String>> get authorRoles {
+  if (_authorRoles is EqualUnmodifiableMapView) return _authorRoles;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_authorRoles);
+}
+
 @override@JsonKey() final  String query;
 
 /// Create a copy of ForumState
@@ -241,16 +252,16 @@ _$ForumStateCopyWith<_ForumState> get copyWith => __$ForumStateCopyWithImpl<_For
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ForumState&&(identical(other.status, status) || other.status == status)&&(identical(other.error, error) || other.error == error)&&const DeepCollectionEquality().equals(other._posts, _posts)&&const DeepCollectionEquality().equals(other._authorNames, _authorNames)&&(identical(other.query, query) || other.query == query));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ForumState&&(identical(other.status, status) || other.status == status)&&(identical(other.error, error) || other.error == error)&&const DeepCollectionEquality().equals(other._posts, _posts)&&const DeepCollectionEquality().equals(other._authorNames, _authorNames)&&const DeepCollectionEquality().equals(other._authorRoles, _authorRoles)&&(identical(other.query, query) || other.query == query));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,status,error,const DeepCollectionEquality().hash(_posts),const DeepCollectionEquality().hash(_authorNames),query);
+int get hashCode => Object.hash(runtimeType,status,error,const DeepCollectionEquality().hash(_posts),const DeepCollectionEquality().hash(_authorNames),const DeepCollectionEquality().hash(_authorRoles),query);
 
 @override
 String toString() {
-  return 'ForumState(status: $status, error: $error, posts: $posts, authorNames: $authorNames, query: $query)';
+  return 'ForumState(status: $status, error: $error, posts: $posts, authorNames: $authorNames, authorRoles: $authorRoles, query: $query)';
 }
 
 
@@ -261,7 +272,7 @@ abstract mixin class _$ForumStateCopyWith<$Res> implements $ForumStateCopyWith<$
   factory _$ForumStateCopyWith(_ForumState value, $Res Function(_ForumState) _then) = __$ForumStateCopyWithImpl;
 @override @useResult
 $Res call({
- LoadStatus status, String? error, List<Post> posts, Map<int, String> authorNames, String query
+ LoadStatus status, String? error, List<Post> posts, Map<int, String> authorNames, Map<int, List<String>> authorRoles, String query
 });
 
 
@@ -278,13 +289,14 @@ class __$ForumStateCopyWithImpl<$Res>
 
 /// Create a copy of ForumState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? error = freezed,Object? posts = null,Object? authorNames = null,Object? query = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? error = freezed,Object? posts = null,Object? authorNames = null,Object? authorRoles = null,Object? query = null,}) {
   return _then(_ForumState(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as LoadStatus,error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,posts: null == posts ? _self._posts : posts // ignore: cast_nullable_to_non_nullable
 as List<Post>,authorNames: null == authorNames ? _self._authorNames : authorNames // ignore: cast_nullable_to_non_nullable
-as Map<int, String>,query: null == query ? _self.query : query // ignore: cast_nullable_to_non_nullable
+as Map<int, String>,authorRoles: null == authorRoles ? _self._authorRoles : authorRoles // ignore: cast_nullable_to_non_nullable
+as Map<int, List<String>>,query: null == query ? _self.query : query // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }

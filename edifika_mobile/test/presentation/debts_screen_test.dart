@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:edifika_mobile/features/residential/domain/my_residence.dart';
 import 'package:edifika_mobile/core/theme/app_theme.dart';
 import 'package:edifika_mobile/features/auth/presentation/session_cubit.dart';
 import 'package:edifika_mobile/features/payments/domain/payments_repository.dart';
@@ -19,8 +20,13 @@ void main() {
   Future<void> pumpDebts(WidgetTester tester, MockPaymentsRepository payments) async {
     final residential = MockResidentialRepository();
     when(() => residential.getBuilding(1)).thenAnswer((_) async => building);
-    when(() => residential.getActiveUserUnit(buildingId: 1, userId: 2))
-        .thenAnswer((_) async => const UserUnit(id: 1, idUnit: 2, idUser: 2, status: 'ACTIVE'));
+    when(() => residential.getMyResidence()).thenAnswer((_) async => const MyResidence(
+          buildingId: 1,
+          buildingName: 'Edificio Los Olivos',
+          unitId: 2,
+          unitNumber: 102,
+          relationType: 'OWNER',
+        ));
     when(() => residential.getUnit(2)).thenAnswer((_) async => unit);
 
     final session = SessionCubit(

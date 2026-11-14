@@ -19,9 +19,16 @@ void main() {
 
   FakeHttpAdapter fakeApi() => FakeHttpAdapter({
         'GET /api/v1/residential/buildings/1': const FakeRoute(200, {'id': 1, 'name': 'Edificio Los Olivos'}),
-        'GET /api/v1/residential/buildings/1/residents': const FakeRoute(200, [
-          {'id': 1, 'idUnit': 2, 'idUser': 2, 'status': 'ACTIVE'},
-        ]),
+        'GET /api/v1/residential/residents/me': const FakeRoute(200, {
+          'buildingId': 1,
+          'buildingName': 'Edificio Los Olivos',
+          'unitId': 2,
+          'unitNumber': 102,
+          'relationType': 'OWNER',
+        }),
+        'GET /api/v1/access/me/doors': const FakeRoute(200, []),
+        'GET /api/v1/access/me/credentials': const FakeRoute(200, []),
+        'GET /api/v1/access/me/attempts': const FakeRoute(200, []),
         'GET /api/v1/residential/units/2': const FakeRoute(200, {'id': 2, 'idBuilding': 1, 'unitNumber': 102, 'floor': 1}),
         'GET /api/v1/payments/debts/unit/2': const FakeRoute(200, [
           {'id': 1, 'unitId': 2, 'description': 'Maintenance fee October', 'amount': 850, 'currency': 'PEN', 'dueDate': '2026-06-30', 'status': 'PENDING'},
@@ -43,7 +50,7 @@ void main() {
         ]),
       });
 
-  Future<void> launchSignedIn(WidgetTester tester) async {
+  Future<void> launchSignedIn(WidgetTester tester, {List<String> roles = const ['OWNER']}) async {
     tester.view.physicalSize = const Size(1080, 2400);
     tester.view.devicePixelRatio = 2.75;
     addTearDown(tester.view.reset);
@@ -55,14 +62,17 @@ void main() {
         'email': 'resident@edifika.com',
         'token': 'fake-jwt-token-resident',
         'fullName': 'Residente Demo',
-        'roles': ['TENANT'],
-        'buildingId': 1,
+        'roles': roles,
       });
     await tester.pumpWidget(EdifikaApp(dependencies: AppDependencies.create(session: session, httpAdapter: fakeApi())));
     await tester.pumpAndSettle();
   }
 
-  Finder tab(String label) => find.descendant(of: find.byType(NavigationBar), matching: find.text(label));
+  // Con 6 pestañas solo se rotula la seleccionada: se toca el destino completo, no el texto.
+  Finder tab(String label) => find.ancestor(
+        of: find.descendant(of: find.byType(NavigationBar), matching: find.text(label)),
+        matching: find.byType(NavigationDestination),
+      );
 
   testWidgets('una sesión guardada abre Inicio con la próxima reserva', (tester) async {
     await launchSignedIn(tester);
@@ -122,5 +132,16 @@ void main() {
     await tester.tap(find.byTooltip('Volver'));
     await tester.pumpAndSettle();
     expect(find.text('Mis deudas'), findsOneWidget);
+  });
+
+  testWidgets('el inquilino no tiene Cuenta y sí Mis accesos', (tester) async {
+    await launchSignedIn(tester, roles: ['TENANT']);
+
+    expect(tab('Cuenta'), findsNothing);
+    expect(find.text('Mi deuda total'), findsNothing);
+
+    await tester.tap(tab('Accesos'));
+    await tester.pumpAndSettle();
+    expect(find.text('Mis accesos'), findsOneWidget);
   });
 }

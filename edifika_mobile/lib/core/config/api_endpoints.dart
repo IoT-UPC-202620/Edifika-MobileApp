@@ -14,6 +14,8 @@ class ApiEndpoints {
   static const String buildings = '/residential/buildings';
   static const String units = '/residential/units';
   static const String userUnits = '/residential/user-units';
+  /// Unidad activa del usuario del token (OWNER/TENANT); 404 si no tiene.
+  static const String residentsMe = '/residential/residents/me';
 
   static const String reservations = '/reservations';
   static const String commonAreas = '/common-areas';
@@ -25,7 +27,8 @@ class ApiEndpoints {
   static const String posts = '/posts';
 
   static const String announcements = '/announcements';
-  static const String announcementReads = '/announcement-reads';
+  /// `POST /announcements/{id}/read` con `{userId}`.
+  static String announcementRead(int announcementId) => '$announcements/$announcementId/read';
 
   static const String notifications = '/notifications';
   static const String deviceTokens = '/device-tokens';
@@ -38,4 +41,11 @@ class ApiEndpoints {
   static const String iotDiscoveredDevices = '/iot/discovered-devices';
   static const String accessCredentials = '/access/credentials';
   static const String telemetryDevices = '/telemetry/devices';
+  static const String telemetryAlerts = '/telemetry/alerts';
+  static const String accessAttempts = '/access/attempts';
+
+  // Accesos del residente (usuario del token)
+  static const String myDoors = '/access/me/doors';
+  static const String myCredentials = '/access/me/credentials';
+  static const String myAttempts = '/access/me/attempts';
 }

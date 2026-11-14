@@ -13,6 +13,7 @@ _Post _$PostFromJson(Map<String, dynamic> json) => _Post(
   residentId: (json['residentId'] as num).toInt(),
   imageUrl: json['imageUrl'] as String?,
   createdAt: json['createdAt'] as String?,
+  authorRole: json['authorRole'] as String?,
 );
 
 Map<String, dynamic> _$PostToJson(_Post instance) => <String, dynamic>{
@@ -22,4 +23,5 @@ Map<String, dynamic> _$PostToJson(_Post instance) => <String, dynamic>{
   'residentId': instance.residentId,
   'imageUrl': instance.imageUrl,
   'createdAt': instance.createdAt,
+  'authorRole': instance.authorRole,
 };

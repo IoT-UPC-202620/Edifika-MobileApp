@@ -114,6 +114,8 @@ class _HomeView extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final next = state.nextReservation;
     return [
+      // El inquilino no ve deudas ni pagos de la unidad (no tiene pestaña Cuenta).
+      if (!user.isTenantOnly)
       AppCard(
         tone: AppCardTone.highlighted,
         padding: const EdgeInsets.all(AppSpacing.xl),

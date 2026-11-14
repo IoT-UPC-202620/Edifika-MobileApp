@@ -15,7 +15,8 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Post {
 
- int get id; String get title; String get content; int get residentId; String? get imageUrl; String? get createdAt;
+ int get id; String get title; String get content; int get residentId; String? get imageUrl; String? get createdAt;/// Rol del autor al publicar (ADMIN, OWNER o TENANT), guardado por Forum desde el JWT.
+ String? get authorRole;
 /// Create a copy of Post
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +29,16 @@ $PostCopyWith<Post> get copyWith => _$PostCopyWithImpl<Post>(this as Post, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Post&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.content, content) || other.content == content)&&(identical(other.residentId, residentId) || other.residentId == residentId)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Post&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.content, content) || other.content == content)&&(identical(other.residentId, residentId) || other.residentId == residentId)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.authorRole, authorRole) || other.authorRole == authorRole));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,content,residentId,imageUrl,createdAt);
+int get hashCode => Object.hash(runtimeType,id,title,content,residentId,imageUrl,createdAt,authorRole);
 
 @override
 String toString() {
-  return 'Post(id: $id, title: $title, content: $content, residentId: $residentId, imageUrl: $imageUrl, createdAt: $createdAt)';
+  return 'Post(id: $id, title: $title, content: $content, residentId: $residentId, imageUrl: $imageUrl, createdAt: $createdAt, authorRole: $authorRole)';
 }
 
 
@@ -48,7 +49,7 @@ abstract mixin class $PostCopyWith<$Res>  {
   factory $PostCopyWith(Post value, $Res Function(Post) _then) = _$PostCopyWithImpl;
 @useResult
 $Res call({
- int id, String title, String content, int residentId, String? imageUrl, String? createdAt
+ int id, String title, String content, int residentId, String? imageUrl, String? createdAt, String? authorRole
 });
 
 
@@ -65,7 +66,7 @@ class _$PostCopyWithImpl<$Res>
 
 /// Create a copy of Post
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? content = null,Object? residentId = null,Object? imageUrl = freezed,Object? createdAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? content = null,Object? residentId = null,Object? imageUrl = freezed,Object? createdAt = freezed,Object? authorRole = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -73,6 +74,7 @@ as String,content: null == content ? _self.content : content // ignore: cast_nul
 as String,residentId: null == residentId ? _self.residentId : residentId // ignore: cast_nullable_to_non_nullable
 as int,imageUrl: freezed == imageUrl ? _self.imageUrl : imageUrl // ignore: cast_nullable_to_non_nullable
 as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as String?,authorRole: freezed == authorRole ? _self.authorRole : authorRole // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -158,10 +160,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String title,  String content,  int residentId,  String? imageUrl,  String? createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String title,  String content,  int residentId,  String? imageUrl,  String? createdAt,  String? authorRole)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Post() when $default != null:
-return $default(_that.id,_that.title,_that.content,_that.residentId,_that.imageUrl,_that.createdAt);case _:
+return $default(_that.id,_that.title,_that.content,_that.residentId,_that.imageUrl,_that.createdAt,_that.authorRole);case _:
   return orElse();
 
 }
@@ -179,10 +181,10 @@ return $default(_that.id,_that.title,_that.content,_that.residentId,_that.imageU
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String title,  String content,  int residentId,  String? imageUrl,  String? createdAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String title,  String content,  int residentId,  String? imageUrl,  String? createdAt,  String? authorRole)  $default,) {final _that = this;
 switch (_that) {
 case _Post():
-return $default(_that.id,_that.title,_that.content,_that.residentId,_that.imageUrl,_that.createdAt);case _:
+return $default(_that.id,_that.title,_that.content,_that.residentId,_that.imageUrl,_that.createdAt,_that.authorRole);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -199,10 +201,10 @@ return $default(_that.id,_that.title,_that.content,_that.residentId,_that.imageU
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String title,  String content,  int residentId,  String? imageUrl,  String? createdAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String title,  String content,  int residentId,  String? imageUrl,  String? createdAt,  String? authorRole)?  $default,) {final _that = this;
 switch (_that) {
 case _Post() when $default != null:
-return $default(_that.id,_that.title,_that.content,_that.residentId,_that.imageUrl,_that.createdAt);case _:
+return $default(_that.id,_that.title,_that.content,_that.residentId,_that.imageUrl,_that.createdAt,_that.authorRole);case _:
   return null;
 
 }
@@ -214,7 +216,7 @@ return $default(_that.id,_that.title,_that.content,_that.residentId,_that.imageU
 @JsonSerializable()
 
 class _Post implements Post {
-  const _Post({required this.id, required this.title, required this.content, required this.residentId, this.imageUrl, this.createdAt});
+  const _Post({required this.id, required this.title, required this.content, required this.residentId, this.imageUrl, this.createdAt, this.authorRole});
   factory _Post.fromJson(Map<String, dynamic> json) => _$PostFromJson(json);
 
 @override final  int id;
@@ -223,6 +225,8 @@ class _Post implements Post {
 @override final  int residentId;
 @override final  String? imageUrl;
 @override final  String? createdAt;
+/// Rol del autor al publicar (ADMIN, OWNER o TENANT), guardado por Forum desde el JWT.
+@override final  String? authorRole;
 
 /// Create a copy of Post
 /// with the given fields replaced by the non-null parameter values.
@@ -237,16 +241,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Post&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.content, content) || other.content == content)&&(identical(other.residentId, residentId) || other.residentId == residentId)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Post&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.content, content) || other.content == content)&&(identical(other.residentId, residentId) || other.residentId == residentId)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.authorRole, authorRole) || other.authorRole == authorRole));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,content,residentId,imageUrl,createdAt);
+int get hashCode => Object.hash(runtimeType,id,title,content,residentId,imageUrl,createdAt,authorRole);
 
 @override
 String toString() {
-  return 'Post(id: $id, title: $title, content: $content, residentId: $residentId, imageUrl: $imageUrl, createdAt: $createdAt)';
+  return 'Post(id: $id, title: $title, content: $content, residentId: $residentId, imageUrl: $imageUrl, createdAt: $createdAt, authorRole: $authorRole)';
 }
 
 
@@ -257,7 +261,7 @@ abstract mixin class _$PostCopyWith<$Res> implements $PostCopyWith<$Res> {
   factory _$PostCopyWith(_Post value, $Res Function(_Post) _then) = __$PostCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String title, String content, int residentId, String? imageUrl, String? createdAt
+ int id, String title, String content, int residentId, String? imageUrl, String? createdAt, String? authorRole
 });
 
 
@@ -274,7 +278,7 @@ class __$PostCopyWithImpl<$Res>
 
 /// Create a copy of Post
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? content = null,Object? residentId = null,Object? imageUrl = freezed,Object? createdAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? content = null,Object? residentId = null,Object? imageUrl = freezed,Object? createdAt = freezed,Object? authorRole = freezed,}) {
   return _then(_Post(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -282,6 +286,7 @@ as String,content: null == content ? _self.content : content // ignore: cast_nul
 as String,residentId: null == residentId ? _self.residentId : residentId // ignore: cast_nullable_to_non_nullable
 as int,imageUrl: freezed == imageUrl ? _self.imageUrl : imageUrl // ignore: cast_nullable_to_non_nullable
 as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as String?,authorRole: freezed == authorRole ? _self.authorRole : authorRole // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

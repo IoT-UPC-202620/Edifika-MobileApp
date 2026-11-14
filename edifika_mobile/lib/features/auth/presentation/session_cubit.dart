@@ -45,6 +45,8 @@ class SessionCubit extends Cubit<SessionState> {
   final ResidentialRepository _residential;
   late final StreamSubscription<void> _expiredSub;
 
+  /// Al abrir la app: un token vencido o ilegible ya lo descarta `restoreSession`;
+  /// uno con firma invalida lo detecta el 401 de /residents/me (o el interceptor).
   Future<void> restore() async {
     final user = await _auth.restoreSession();
     if (user == null || !user.canUseMobileApp) {
@@ -61,23 +63,33 @@ class SessionCubit extends Cubit<SessionState> {
     await loadResidence();
   }
 
+  /// Edificio y unidad del residente desde `GET /residential/residents/me` (userId del JWT).
   Future<void> loadResidence() async {
     final user = state.user;
     if (user == null) return;
-    final buildingId = user.buildingId;
-    if (buildingId == null) {
-      emit(state.copyWith(residenceError: 'Tu usuario no tiene un edificio asignado. Contacta a tu administración.'));
-      return;
-    }
 
     emit(state.copyWith(loadingResidence: true, residenceError: null));
     try {
-      final building = await _residential.getBuilding(buildingId);
-      final relation = await _residential.getActiveUserUnit(buildingId: buildingId, userId: user.id);
-      final unit = relation == null ? null : await _residential.getUnit(relation.idUnit);
-      emit(state.copyWith(loadingResidence: false, residence: Residence(building: building, unit: unit)));
+      final me = await _residential.getMyResidence();
+      final building = await _residential.getBuilding(me.buildingId);
+      final unit = await _residential.getUnit(me.unitId);
+      emit(state.copyWith(
+        loadingResidence: false,
+        residence: Residence(building: building, unit: unit, relationType: me.relationType),
+      ));
     } on ApiException catch (error) {
-      emit(state.copyWith(loadingResidence: false, residenceError: error.message));
+      if (error.statusCode == 401) {
+        // Token invalido o revocado: se borra la sesion y se vuelve al login.
+        await _auth.signOut();
+        emit(const SessionState(status: SessionStatus.unauthenticated, notice: 'Tu sesión expiró. Inicia sesión nuevamente.'));
+        return;
+      }
+      emit(state.copyWith(
+        loadingResidence: false,
+        residenceError: error.statusCode == 404
+            ? 'Tu usuario no tiene un edificio asignado. Contacta a tu administración.'
+            : error.message,
+      ));
     }
   }
 

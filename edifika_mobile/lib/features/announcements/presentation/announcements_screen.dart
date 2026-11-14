@@ -39,11 +39,11 @@ class AnnouncementsCubit extends Cubit<AnnouncementsState> {
     emit(state.copyWith(status: LoadStatus.loading, error: null));
     try {
       final items = await _repository.getByBuilding(buildingId);
-      final reads = await _repository.getReadsByUser(userId);
+      // Las lecturas confirmadas en esta sesion se conservan al recargar.
       emit(AnnouncementsState(
         status: LoadStatus.ready,
         items: items.reversed.toList(),
-        readIds: {for (final r in reads) r.announcementId},
+        readIds: state.readIds,
       ));
     } on ApiException catch (error) {
       if (error.kind == ApiErrorKind.notFound) {
@@ -60,6 +60,11 @@ class AnnouncementsCubit extends Cubit<AnnouncementsState> {
       emit(state.copyWith(readIds: {...state.readIds, announcementId}));
       return null;
     } on ApiException catch (error) {
+      // El backend responde error (403) si la lectura ya estaba registrada.
+      if (error.statusCode == 403) {
+        emit(state.copyWith(readIds: {...state.readIds, announcementId}));
+        return 'Ya habías confirmado la lectura de este anuncio.';
+      }
       return error.message;
     }
   }

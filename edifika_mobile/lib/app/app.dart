@@ -54,6 +54,7 @@ class _EdifikaAppState extends State<EdifikaApp> {
         RepositoryProvider.value(value: deps.announcements),
         RepositoryProvider.value(value: deps.profile),
         RepositoryProvider.value(value: deps.iot),
+        RepositoryProvider.value(value: deps.access),
       ],
       child: MultiBlocProvider(
         providers: [

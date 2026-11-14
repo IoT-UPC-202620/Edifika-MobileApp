@@ -24,7 +24,13 @@ abstract class AuthenticatedUser with _$AuthenticatedUser {
   /// Propietario (OWNER) o inquilino (TENANT): usa las pantallas del residente.
   bool get isResident => _normalizedRoles.any(const {'OWNER', 'TENANT'}.contains);
 
-  /// Administrador del edificio: en la app móvil solo ve la gestión IoT.
+  /// Propietario: ve tambien "Cuenta" (deudas y pagos).
+  bool get isOwner => _normalizedRoles.contains('OWNER');
+
+  /// Inquilino sin rol de propietario: sin pestaña "Cuenta".
+  bool get isTenantOnly => _normalizedRoles.contains('TENANT') && !isOwner && !isAdmin;
+
+  /// Administrador del edificio: inicio con resumen y gestión IoT.
   bool get isAdmin => _normalizedRoles.contains('ADMIN');
 
   /// La app móvil admite residentes y administradores; cualquier otro rol

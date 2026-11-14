@@ -187,14 +187,23 @@ class InitialsAvatar extends StatelessWidget {
     return (first + last).toUpperCase();
   }
 
+  /// Mismo nombre, mismo color (como la web).
+  static Color colorOf(String name) {
+    var hash = 0;
+    for (final unit in name.codeUnits) {
+      hash = (hash * 31 + unit) & 0x7fffffff;
+    }
+    return HSLColor.fromAHSL(1, (hash % 360).toDouble(), 0.55, 0.42).toColor();
+  }
+
   @override
   Widget build(BuildContext context) {
     return CircleAvatar(
       radius: radius,
-      backgroundColor: AppColors.primaryContainer,
+      backgroundColor: colorOf(fullName),
       child: Text(
         initialsOf(fullName),
-        style: Theme.of(context).textTheme.labelSmall?.copyWith(color: AppColors.primary),
+        style: Theme.of(context).textTheme.labelSmall?.copyWith(color: Colors.white, fontWeight: FontWeight.w700),
       ),
     );
   }

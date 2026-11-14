@@ -16,12 +16,33 @@ abstract class ForumState with _$ForumState {
     String? error,
     @Default(<Post>[]) List<Post> posts,
     @Default(<int, String>{}) Map<int, String> authorNames,
+    /// Roles actuales de cada usuario: respaldo para posts sin authorRole.
+    @Default(<int, List<String>>{}) Map<int, List<String>> authorRoles,
     @Default('') String query,
   }) = _ForumState;
 
   const ForumState._();
 
   String authorOf(Post post) => authorNames[post.residentId] ?? 'Vecino';
+
+  /// Administrador, Propietario o Inquilino (mismo criterio que la web).
+  String roleOf(Post post) {
+    final role = post.authorRole ?? _mainRole(authorRoles[post.residentId] ?? const []);
+    return switch (role?.toUpperCase()) {
+      'ADMIN' => 'Administrador',
+      'OWNER' => 'Propietario',
+      'TENANT' => 'Inquilino',
+      _ => 'Residente',
+    };
+  }
+
+  static String? _mainRole(List<String> roles) {
+    final upper = roles.map((r) => r.toUpperCase().replaceFirst('ROLE_', '')).toSet();
+    for (final role in const ['ADMIN', 'OWNER', 'TENANT']) {
+      if (upper.contains(role)) return role;
+    }
+    return null;
+  }
 
   List<Post> get visible {
     final q = query.trim().toLowerCase();
@@ -48,6 +69,7 @@ class ForumCubit extends Cubit<ForumState> {
         status: LoadStatus.ready,
         posts: posts,
         authorNames: {for (final u in await usersFuture) u.id: u.fullName},
+        authorRoles: {for (final u in await usersFuture) u.id: u.roles},
       ));
     } on ApiException catch (error) {
       emit(state.copyWith(status: LoadStatus.failure, error: error.message));
