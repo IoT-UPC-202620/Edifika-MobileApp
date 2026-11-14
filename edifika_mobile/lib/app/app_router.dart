@@ -20,6 +20,7 @@ import '../features/iot/presentation/iot_management_screen.dart';
 import '../features/iot/presentation/iot_routes_args.dart';
 import '../features/notifications/presentation/notifications_screen.dart';
 import '../features/payments/presentation/debts_screen.dart';
+import '../features/payments/presentation/pay_debt_screen.dart';
 import '../features/payments/presentation/payments_screen.dart';
 import '../features/reservations/presentation/new_reservation_screen.dart';
 import '../features/reservations/presentation/reservation_detail_screen.dart';
@@ -91,7 +92,14 @@ GoRouter createRouter(SessionCubit session) {
             GoRoute(
               path: '/account',
               builder: (context, state) => const DebtsScreen(),
-              routes: [GoRoute(path: 'payments', builder: (context, state) => const PaymentsScreen())],
+              routes: [
+                GoRoute(path: 'payments', builder: (context, state) => const PaymentsScreen()),
+                GoRoute(
+                  path: 'pay',
+                  redirect: (context, state) => state.extra is PayDebtArgs ? null : '/account',
+                  builder: (context, state) => PayDebtScreen(args: state.extra! as PayDebtArgs),
+                ),
+              ],
             ),
           ]),
           StatefulShellBranch(routes: [
