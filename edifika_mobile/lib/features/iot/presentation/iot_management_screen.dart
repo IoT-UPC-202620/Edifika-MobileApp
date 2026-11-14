@@ -382,6 +382,10 @@ class _DeviceCard extends StatelessWidget {
               StatusChip(label, tone: tone),
             ],
           ),
+          if (IotLabels.deviceOrigin(device.firmwareVersion) case (final originLabel, final originTone)) ...[
+            const SizedBox(height: AppSpacing.xs),
+            Align(alignment: Alignment.centerLeft, child: StatusChip('Origen: $originLabel', tone: originTone)),
+          ],
           const SizedBox(height: AppSpacing.sm),
           Text(
             [IotLabels.deviceType(device.deviceType), if (device.location.isNotEmpty) device.location].join(' · '),

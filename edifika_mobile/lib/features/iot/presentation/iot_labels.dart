@@ -16,6 +16,15 @@ class IotLabels {
         _ => (status, StatusTone.neutral),
       };
 
+  /// Origen segun el firmware reportado: 'seed' = sembrado, '...-sim' = simulador local,
+  /// otro = nodo real. null si el dispositivo aun no reporta firmware.
+  static (String, StatusTone)? deviceOrigin(String? firmwareVersion) {
+    if (firmwareVersion == null || firmwareVersion.isEmpty) return null;
+    if (firmwareVersion == 'seed') return ('Seed', StatusTone.pending);
+    if (firmwareVersion.endsWith('-sim')) return ('Simulado', StatusTone.neutral);
+    return ('Real', StatusTone.success);
+  }
+
   static (String, StatusTone) gatewayStatus(String status) => switch (status.toUpperCase()) {
         'ONLINE' => ('En línea', StatusTone.success),
         'OFFLINE' => ('Sin conexión', StatusTone.danger),
