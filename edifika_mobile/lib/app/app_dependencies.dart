@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import '../core/events/data_changes.dart';
 import '../core/network/api_client.dart';
 import '../core/storage/session_storage.dart';
+import '../features/access/data/access_repository.dart';
 import '../features/announcements/data/announcements_repository_impl.dart';
 import '../features/announcements/domain/announcements_repository.dart';
 import '../features/auth/data/auth_repository_impl.dart';
@@ -40,6 +41,7 @@ class AppDependencies {
     required this.announcements,
     required this.profile,
     required this.iot,
+    required this.access,
   });
 
   /// `httpAdapter` solo se usa en pruebas (respuestas HTTP simuladas).
@@ -63,6 +65,7 @@ class AppDependencies {
       announcements: AnnouncementsRepositoryImpl(dio, changes),
       profile: ProfileRepositoryImpl(dio),
       iot: IotRepositoryImpl(dio),
+      access: AccessRepository(dio),
     );
   }
 
@@ -85,4 +88,7 @@ class AppDependencies {
 
   /// Gestión IoT del administrador (solo microservicios).
   final IotRepository iot;
+
+  /// Mis accesos (residente) y resumen del administrador.
+  final AccessRepository access;
 }

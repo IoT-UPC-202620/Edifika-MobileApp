@@ -41,4 +41,11 @@ class ApiEndpoints {
   static const String iotDiscoveredDevices = '/iot/discovered-devices';
   static const String accessCredentials = '/access/credentials';
   static const String telemetryDevices = '/telemetry/devices';
+  static const String telemetryAlerts = '/telemetry/alerts';
+  static const String accessAttempts = '/access/attempts';
+
+  // Accesos del residente (usuario del token)
+  static const String myDoors = '/access/me/doors';
+  static const String myCredentials = '/access/me/credentials';
+  static const String myAttempts = '/access/me/attempts';
 }
