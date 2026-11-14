@@ -42,7 +42,8 @@ class IotManagementScreen extends StatelessWidget {
             child: ScreenScaffold(
             title: 'Gestión IoT',
             location: building == null ? null : _buildingLocation(building),
-            showBack: false,
+            // Se abre desde el Inicio del administrador: muestra volver.
+            showBack: GoRouter.of(context).canPop(),
             onRefresh: cubit.refresh,
             trailing: IconButton(
               tooltip: 'Mi cuenta',

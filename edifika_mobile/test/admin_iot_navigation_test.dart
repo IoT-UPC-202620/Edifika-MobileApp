@@ -22,6 +22,9 @@ void main() {
         'GET /api/v1/iot/gateways': const FakeRoute(200, [gatewayJson]),
         'GET /api/v1/iot/devices': const FakeRoute(200, [deviceJson]),
         'GET /api/v1/telemetry/devices': const FakeRoute(200, [telemetryJson]),
+        // Resumen del Inicio del administrador
+        'GET /api/v1/telemetry/alerts': const FakeRoute(200, []),
+        'GET /api/v1/access/attempts': const FakeRoute(200, []),
       });
 
   Future<FakeHttpAdapter> launchWith(WidgetTester tester, FakeHttpAdapter api, {required List<String> roles}) async {
@@ -40,13 +43,20 @@ void main() {
       });
     await tester.pumpWidget(EdifikaApp(dependencies: AppDependencies.create(session: session, httpAdapter: api)));
     await tester.pumpAndSettle();
+    if (roles.contains('ADMIN')) {
+      // El administrador entra al Inicio (resumen) y desde ahí abre la Gestión IoT.
+      expect(find.text('Alertas IoT abiertas'), findsOneWidget);
+      api.requests.clear(); // los tests cuentan solo las llamadas de la Gestión IoT
+      await tester.tap(find.widgetWithText(FilledButton, 'Gestión IoT'));
+      await tester.pumpAndSettle();
+    }
     return api;
   }
 
   Future<FakeHttpAdapter> launch(WidgetTester tester, {required List<String> roles}) =>
       launchWith(tester, fakeApi(), roles: roles);
 
-  testWidgets('el administrador entra directo a Gestión IoT, sin la barra del residente', (tester) async {
+  testWidgets('el administrador entra al Inicio y abre Gestión IoT, sin la barra del residente', (tester) async {
     await launch(tester, roles: ['ADMIN']);
 
     expect(find.text('Gestión IoT'), findsOneWidget);
