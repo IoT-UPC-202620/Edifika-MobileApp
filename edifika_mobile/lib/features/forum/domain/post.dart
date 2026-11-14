@@ -12,6 +12,9 @@ abstract class Post with _$Post {
     required int residentId,
     String? imageUrl,
     String? createdAt,
+
+    /// Rol del autor al publicar (ADMIN, OWNER o TENANT), guardado por Forum desde el JWT.
+    String? authorRole,
   }) = _Post;
 
   factory Post.fromJson(Map<String, dynamic> json) => _$PostFromJson(json);

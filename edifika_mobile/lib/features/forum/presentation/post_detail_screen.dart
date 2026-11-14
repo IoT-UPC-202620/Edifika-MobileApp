@@ -41,7 +41,10 @@ class PostDetailScreen extends StatelessWidget {
                       const SizedBox(width: AppSpacing.md),
                       Expanded(
                         child: Text(
-                          post.residentId == user.id ? '${args.authorName} · Tú' : args.authorName,
+                          [
+                            post.residentId == user.id ? '${args.authorName} · Tú' : args.authorName,
+                            if (args.authorRole.isNotEmpty) args.authorRole,
+                          ].join(' · '),
                           style: textTheme.bodyLarge,
                         ),
                       ),

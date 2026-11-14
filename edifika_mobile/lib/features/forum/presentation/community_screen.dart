@@ -14,10 +14,11 @@ import 'forum_cubits.dart';
 
 /// Datos que recibe "Tema del foro".
 class PostDetailArgs {
-  const PostDetailArgs({required this.post, required this.authorName});
+  const PostDetailArgs({required this.post, required this.authorName, this.authorRole = ''});
 
   final Post post;
   final String authorName;
+  final String authorRole;
 }
 
 /// Mockup 10 · Comunidades.
@@ -88,9 +89,10 @@ class CommunityScreen extends StatelessWidget {
                             _TopicCard(
                               post: post,
                               author: state.authorOf(post),
+                              role: state.roleOf(post),
                               onTap: () => context.push(
                                 '/community/post',
-                                extra: PostDetailArgs(post: post, authorName: state.authorOf(post)),
+                                extra: PostDetailArgs(post: post, authorName: state.authorOf(post), authorRole: state.roleOf(post)),
                               ),
                             ),
                             const SizedBox(height: AppSpacing.md),
@@ -110,10 +112,11 @@ class CommunityScreen extends StatelessWidget {
 }
 
 class _TopicCard extends StatelessWidget {
-  const _TopicCard({required this.post, required this.author, required this.onTap});
+  const _TopicCard({required this.post, required this.author, required this.role, required this.onTap});
 
   final Post post;
   final String author;
+  final String role;
   final VoidCallback onTap;
 
   @override
@@ -128,7 +131,15 @@ class _TopicCard extends StatelessWidget {
           const SizedBox(height: AppSpacing.sm),
           Text(post.title, style: textTheme.titleMedium),
           const SizedBox(height: AppSpacing.sm),
-          Text('$author · ${Formatters.date(post.createdAt ?? '')}', style: textTheme.bodySmall),
+          Row(
+            children: [
+              InitialsAvatar(author, radius: 14),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: Text('$author · $role · ${Formatters.date(post.createdAt ?? '')}', style: textTheme.bodySmall),
+              ),
+            ],
+          ),
           const SizedBox(height: AppSpacing.md),
           Text('Ver tema →', style: textTheme.labelMedium?.copyWith(color: AppColors.primary)),
         ],
