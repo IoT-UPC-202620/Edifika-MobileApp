@@ -22,11 +22,16 @@ Dio createApiClient({
       receiveTimeout: AppConfig.receiveTimeout,
       contentType: Headers.jsonContentType,
       responseType: ResponseType.json,
+      // ngrok (plan free) puede responder con una pagina de aviso en vez de JSON.
+      headers: {if (_isNgrok(baseUrl)) 'ngrok-skip-browser-warning': 'true'},
     ),
   );
   dio.interceptors.add(AuthInterceptor(session: session, onUnauthorized: onUnauthorized));
   return dio;
 }
+
+bool _isNgrok(String url) =>
+    RegExp(r'\.ngrok(-free)?\.(app|dev|io)$', caseSensitive: false).hasMatch(Uri.tryParse(url)?.host ?? '');
 
 class AuthInterceptor extends Interceptor {
   AuthInterceptor({required this.session, required this.onUnauthorized});
